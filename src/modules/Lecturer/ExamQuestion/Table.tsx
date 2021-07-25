@@ -13,7 +13,7 @@ const Table: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   React.useEffect(() => {
-    store.getQuestions();
+    store.getQuestions({page: 1, limit: store.pagination.limit});
   }, []);
 
   return (
@@ -32,25 +32,30 @@ const Table: React.FunctionComponent = () => {
         </THeader>
         <TBody>
           {store.questions.map((cauHoi, index) => (
-            <Row key={cauHoi.id}>
+            <Row key={cauHoi._id}>
               <Cell>{index + 1}</Cell>
               <Cell>
-                <StyledNavLink to={`exam-questions/details/${cauHoi.id}`}>
-                  {cauHoi.noiDung}
+                <StyledNavLink to={`exam-questions/details/${cauHoi._id}`}>
+                  {cauHoi.content}
                 </StyledNavLink>
               </Cell>
-              <Cell>{cauHoi.doKho}</Cell>
-              <Cell>{cauHoi.hocPhan}</Cell>
-              <Cell>{cauHoi.nguoiTao}</Cell>
+              <Cell>{cauHoi.level}</Cell>
+              <Cell>{cauHoi.module}</Cell>
+              <Cell>{cauHoi.user}</Cell>
               <Cell>
-                <StyledLink to={`exam-questions/details/${cauHoi.id}`}>Xem</StyledLink>
-                <a onClick={() => store.deleteQuestion(cauHoi.id)}>Xoá</a>
+                <StyledLink to={`exam-questions/details/${cauHoi._id}`}>Xem</StyledLink>
+                <a onClick={() => store.deleteQuestion(cauHoi._id)}>Xoá</a>
               </Cell>
             </Row>
           ))}
         </TBody>
       </EmployeeTable>
-      <Pagination />
+      <Pagination
+        pageTotal={store.pagination.pageTotal}
+        onChange={({selected}) => {
+          store.getQuestions({page: selected + 1, limit: store.pagination.limit});
+        }}
+      />
     </TableWrapper>
   );
 };

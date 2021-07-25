@@ -9,7 +9,7 @@ import {BaseColor} from '../../../theme';
 import {useLectureStore} from '../store';
 
 type ItemSelectBox = {
-  id: number;
+  _id: string;
   name: string;
 };
 
@@ -17,14 +17,26 @@ const ModuleSelectBox: React.FunctionComponent = () => {
   const store = useLectureStore();
   const [isListOpen, setIsListOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    store.getModules();
+  }, [store]);
+
+  React.useEffect(() => {
+    if (store.chapters.find((chapter) => chapter._id === store.questionDetails.chapter._id)) {
+      return;
+    }
+    store.questionDetails.chapter = store.chapters[0];
+  }, [store.chapters]);
+
   const toggleList = () => {
     setIsListOpen((prevState) => !prevState);
   };
 
   const selectItem = (item: ItemSelectBox) => {
     setIsListOpen(false);
-    store.questionDetails.hocPhan = item;
-    store.questionDetails.chuong = store.getChapter()[0];
+
+    store.getChapter(item._id);
+    store.questionDetails.module = item;
   };
 
   return (
@@ -33,14 +45,14 @@ const ModuleSelectBox: React.FunctionComponent = () => {
       setIsListOpen={setIsListOpen}
       header={
         <HeaderSelectBox onClick={toggleList}>
-          <p>{store.questionDetails.hocPhan.name}</p>
+          <p>{store.questionDetails.module.name}</p>
           <StyledIcon icon={isListOpen ? faAngleDown : faAngleUp} />
         </HeaderSelectBox>
       }
     >
-      {store.getModules().map((item, index) => (
+      {store.modules.map((item, index) => (
         <StyledItem
-          className={store.questionDetails.hocPhan.id === item.id ? 'active' : ''}
+          className={store.questionDetails.module._id === item._id ? 'active' : ''}
           key={index}
           onClick={() => selectItem(item)}
         >

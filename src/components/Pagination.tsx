@@ -4,16 +4,22 @@ import styled, {css} from 'styled-components';
 
 import {BaseColor} from '../theme';
 
-const Pagination: React.FunctionComponent = () => (
+type Prop = {
+  pageTotal: number;
+  onChange: (selectedItem: {selected: number}) => void;
+};
+
+const Pagination: React.FunctionComponent<Prop> = ({pageTotal, onChange}: Prop) => (
   <StyledReactPaginate>
     <ReactPaginate
       previousLabel={'Previous'}
       nextLabel={'Next'}
       breakLabel={'...'}
       breakClassName={'break-me'}
-      pageCount={10}
+      pageCount={pageTotal}
       marginPagesDisplayed={1}
       pageRangeDisplayed={2}
+      onPageChange={onChange}
       containerClassName={'pagination'}
       previousLinkClassName={'pagination__link'}
       nextLinkClassName={'pagination__link'}

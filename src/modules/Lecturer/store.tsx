@@ -1,167 +1,147 @@
 import React from 'react';
 import {makeAutoObservable, observable, configure} from 'mobx';
+import qs from 'qs';
+
+import {$delete, get, post, put} from '../../infra/http';
+import {Pagination} from '../../types';
 
 configure({enforceActions: 'observed'});
 
 type QuestionTable = {
-  id: number;
-  noiDung: string;
-  doKho: string;
-  hocPhan: string;
-  nguoiTao: string;
+  _id: string;
+  content: string;
+  level: number;
+  module: string;
+  user: string;
+};
+
+type QuestionTableResponse = {
+  statusCode: number;
+  payload: {
+    questionTable: QuestionTable[];
+    pageTotal: number;
+    limit: number;
+  };
 };
 
 type Answer = {
-  id: number;
-  noiDung: string;
-  laCauTraLoiDung: boolean;
+  _id: string;
+  content: string;
+  isTrue: boolean;
 };
 
 type Module = {
-  id: number;
+  _id: string;
   name: string;
 };
 
+type ModuleResponse = {
+  statusCode: number;
+  payload: {
+    modules: Module[];
+  };
+};
+
 type Chapter = {
-  id: number;
+  _id: string;
   name: string;
 };
 
 type ChapterResponse = {
-  id: number;
-  idHocPhan: number;
-  name: string;
+  statusCode: number;
+  payload: {
+    chapters: Chapter[];
+  };
 };
 
 type QuestionDetails = {
-  id: number;
-  noiDung: string;
-  doKho: number;
-  hocPhan: Module;
-  chuong: Chapter;
-  listCauHoi: Answer[];
+  _id: string;
+  content: string;
+  level: number;
+  module: Module;
+  chapter: Chapter;
+  answers: Answer[];
 };
 
 class LecturerStore {
   @observable questions: QuestionTable[] = [];
 
-  @observable questionDetails: QuestionDetails = {
-    id: 0,
-    noiDung: '',
-    doKho: 1,
-    hocPhan: {
-      id: 0,
-      name: '',
-    },
-    chuong: {
-      id: 0,
-      name: '',
-    },
-    listCauHoi: [],
+  @observable pagination: Pagination = {
+    pageTotal: 0,
+    limit: 10,
   };
+
+  @observable questionDetails: QuestionDetails = {
+    _id: '',
+    content: '',
+    level: 1,
+    module: {
+      _id: '',
+      name: '',
+    },
+    chapter: {
+      _id: '',
+      name: '',
+    },
+    answers: [],
+  };
+
+  @observable modules: Module[] = [];
+
+  @observable chapters: Chapter[] = [];
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  public getQuestions() {
-    const data = [
-      {
-        id: 1,
-        noiDung:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate repudiandae cumque atque corrupti, ipsam, quam deleniti culpa veniam eum rerum labore voluptatem pariatur et excepturi perferendis nulla accusantium debitis obcaecati.',
-        doKho: 'Dễ',
-        hocPhan: 'Kiểm thử',
-        nguoiTao: '@Emiila Mayer',
-      },
-      {
-        id: 2,
-        noiDung: 'lorem',
-        doKho: 'Dễ',
-        hocPhan: 'Kiểm thử',
-        nguoiTao: '@Emiila Mayer',
-      },
-      {
-        id: 3,
-        noiDung: 'lorem',
-        doKho: 'Dễ',
-        hocPhan: 'Kiểm thử',
-        nguoiTao: '@Emiila Mayer',
-      },
-      {
-        id: 4,
-        noiDung: 'lorem',
-        doKho: 'Dễ',
-        hocPhan: 'Kiểm thử',
-        nguoiTao: '@Emiila Mayer',
-      },
-      {
-        id: 5,
-        noiDung: 'lorem',
-        doKho: 'Dễ',
-        hocPhan: 'Kiểm thử',
-        nguoiTao: '@Emiila Mayer',
-      },
-    ];
-
-    this.questions = data;
-  }
-
-  public getModules(): Module[] {
-    return [
-      {
-        id: 1,
-        name: 'Kiểm thử',
-      },
-      {
-        id: 2,
-        name: 'C++',
-      },
-      {
-        id: 3,
-        name: 'Java',
-      },
-    ];
-  }
-
-  public getQuestionDetails(id: number) {
-    const data: QuestionDetails = {
-      id: id,
-      noiDung: 'noi dung asdasfd',
-      doKho: 1,
-      hocPhan: {
-        id: 2,
-        name: 'C++',
-      },
-      chuong: {
-        id: 3,
-        name: 'Giải thuật C++',
-      },
-      listCauHoi: [
-        {id: 1, noiDung: 'nd cau hoi 1', laCauTraLoiDung: false},
-        {id: 2, noiDung: 'nd cau hoi 2', laCauTraLoiDung: true},
-        {id: 3, noiDung: 'nd cau hoi 3', laCauTraLoiDung: false},
-        {id: 4, noiDung: 'nd cau hoi 4', laCauTraLoiDung: false},
-      ],
+  public *getQuestions(query: any) {
+    const getQuery = {
+      ...query,
+      year: query.year,
     };
+    const queryString = qs.stringify(getQuery);
+
+    const data: QuestionTableResponse = yield get(`/questions?${queryString}`);
+
+    console.log('data:', data);
+    this.questions = data.payload.questionTable;
+    this.pagination.pageTotal = data.payload.pageTotal;
+    this.pagination.limit = data.payload.limit;
+  }
+
+  public *getModules() {
+    const data: ModuleResponse = yield get('/modules');
+
+    console.log('data modules:', data);
+    this.modules = data.payload.modules;
+  }
+
+  public *getQuestionDetails(id: string) {
+    console.log('id', id);
+    const data: QuestionDetails = yield get(`/questions/details/${id}`);
+
+    console.log('details:', data);
 
     this.questionDetails = data;
   }
 
-  public getChapter() {
-    const data: ChapterResponse[] = [
-      {id: 1, idHocPhan: 1, name: 'Kiểm thử hộp đen'},
-      {id: 2, idHocPhan: 1, name: 'Kiểm thử hộp trắng'},
-      {id: 3, idHocPhan: 2, name: 'Giải thuật C++'},
-      {id: 4, idHocPhan: 3, name: 'Java nâng cao'},
-      {id: 5, idHocPhan: 3, name: 'Class trong Java'},
-    ];
+  public *getChapter(moduleId: string) {
+    const data: ChapterResponse = yield get(`/chapters/${moduleId}`);
 
-    return data.filter((chapter) => chapter.idHocPhan === this.questionDetails.hocPhan.id);
+    this.chapters = data.payload.chapters;
   }
 
-  public deleteQuestion(id: number) {
-    console.log('delete question id:', id);
+  public *createQuestion(question: any) {
+    yield post('/questions', question);
+  }
+
+  public *updateQuestion(question: any) {
+    yield put(`/questions/${question._id}`, question);
+  }
+
+  public *deleteQuestion(id: string) {
+    this.questions = this.questions.filter((question) => question._id !== id);
+    yield $delete(`/questions/${id}`);
   }
 }
 

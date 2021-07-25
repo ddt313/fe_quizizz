@@ -90,3 +90,24 @@ export const put = async (endpoint: string, data: any, option?: any) => {
     throw new HttpRequestError(err.response.data.failures, err.response.status);
   }
 };
+
+export const $delete = async (endpoint: string, option?: any) => {
+  const config = {
+    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+    ...option,
+  };
+
+  try {
+    const response: AxiosResponse<any> = await axios.delete(
+      `${process.env.REACT_APP_API_URL}${endpoint}`,
+      config,
+    );
+
+    return response.data;
+  } catch (err) {
+    if (!err.response) {
+      throw new HttpRequestError([{reason: 'NetworkError', message: 'Network Error'}]);
+    }
+    throw new HttpRequestError(err.response.data.failures, err.response.status);
+  }
+};

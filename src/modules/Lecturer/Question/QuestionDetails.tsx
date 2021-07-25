@@ -26,30 +26,30 @@ const QuestionDetails: React.FunctionComponent = () => {
   const {id}: {id: string} = useParams();
 
   React.useEffect(() => {
-    store.getQuestionDetails(+id);
+    store.getQuestionDetails(id);
   }, []);
 
-  const handleRadioChange = (answerId: number) => {
+  React.useEffect(() => {
+    store.getChapter(store.questionDetails.module._id);
+  }, [store.questionDetails]);
+
+  const handleRadioChange = (index: number) => {
     if (!isEdit) {
       return;
     }
-    store.questionDetails.listCauHoi.find(
-      (cauHoi) => cauHoi.laCauTraLoiDung === true,
-    )!.laCauTraLoiDung = false;
-    store.questionDetails.listCauHoi.find(
-      (cauHoi) => cauHoi.id === answerId,
-    )!.laCauTraLoiDung = true;
+    store.questionDetails.answers.find((cauHoi) => cauHoi.isTrue === true)!.isTrue = false;
+    store.questionDetails.answers[index].isTrue = true;
     setIsRender(!isRender);
     console.log(isRender);
-    console.log(store.questionDetails.listCauHoi);
+    console.log(store.questionDetails.answers);
   };
 
   const handleChange = (index: number, value: string) => {
-    store.questionDetails.listCauHoi[index].noiDung = value;
+    store.questionDetails.answers[index].content = value;
   };
 
   const handleChangeNoiDung = (value: string) => {
-    store.questionDetails.noiDung = value;
+    store.questionDetails.content = value;
   };
 
   const handleEditBottonClick = () => {
@@ -58,11 +58,12 @@ const QuestionDetails: React.FunctionComponent = () => {
   const handleSaveBottonClick = () => {
     setIsEdit(false);
     // post data
+    store.updateQuestion(store.questionDetails);
     console.log('post data details');
   };
   const handleCancelBottonClick = () => {
     setIsEdit(false);
-    store.getQuestionDetails(+id);
+    store.getQuestionDetails(id);
   };
 
   return (
@@ -88,11 +89,11 @@ const QuestionDetails: React.FunctionComponent = () => {
               <StyledValue>
                 {isEdit ? (
                   <StyledTextArea
-                    value={store.questionDetails.noiDung}
+                    value={store.questionDetails.content}
                     onChange={(event) => handleChangeNoiDung(event.target.value)}
                   />
                 ) : (
-                  store.questionDetails.noiDung
+                  store.questionDetails.content
                 )}
               </StyledValue>
             </Grid>
@@ -102,22 +103,22 @@ const QuestionDetails: React.FunctionComponent = () => {
               <StyledKey>Câu trả lời:</StyledKey>
             </Grid>
             <Grid xl={10}>
-              {store.questionDetails.listCauHoi.map((cauHoi, index) => (
+              {store.questionDetails.answers.map((cauHoi, index) => (
                 <RadioWrapper key={index}>
                   <FontAwesomeIcon
-                    onClick={() => handleRadioChange(cauHoi.id)}
-                    icon={cauHoi.laCauTraLoiDung ? faCircleCheck : faCircleUncheck}
+                    onClick={() => handleRadioChange(index)}
+                    icon={cauHoi.isTrue ? faCircleCheck : faCircleUncheck}
                   />
                   <NoiDungCauHoi>
                     {isEdit ? (
                       <input
                         style={{width: '100%', height: '3rem'}}
                         type="text"
-                        value={cauHoi.noiDung}
+                        value={cauHoi.content}
                         onChange={(evevt) => handleChange(index, evevt.target.value)}
                       />
                     ) : (
-                      cauHoi.noiDung
+                      cauHoi.content
                     )}
                   </NoiDungCauHoi>
                 </RadioWrapper>
@@ -134,7 +135,7 @@ const QuestionDetails: React.FunctionComponent = () => {
                   <ModuleSelectBox />
                 </div>
               ) : (
-                store.questionDetails.hocPhan.name
+                store.questionDetails.module.name
               )}
             </Grid>
           </WrapperContentItem>
@@ -148,7 +149,7 @@ const QuestionDetails: React.FunctionComponent = () => {
                   <ChapterSelectBox />
                 </div>
               ) : (
-                store.questionDetails.chuong.name
+                store.questionDetails.chapter.name
               )}
             </Grid>
           </WrapperContentItem>
@@ -160,7 +161,7 @@ const QuestionDetails: React.FunctionComponent = () => {
                   <LevelSelectBox />
                 </div>
               ) : (
-                levels[store.questionDetails.doKho]
+                levels[store.questionDetails.level - 1]
               )}
             </Grid>
           </WrapperContentItem>

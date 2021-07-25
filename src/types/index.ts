@@ -3,3 +3,8 @@ export enum Role {
   lecturer = 'Lecturer',
   student = 'Student',
 }
+
+export type Pagination = {
+  limit: number;
+  pageTotal: number;
+};

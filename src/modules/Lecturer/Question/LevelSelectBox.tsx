@@ -19,7 +19,7 @@ const LevelSelectBox: React.FunctionComponent = () => {
 
   const selectItem = (item: number) => {
     setIsListOpen(false);
-    store.questionDetails.doKho = item;
+    store.questionDetails.level = item;
   };
 
   return (
@@ -28,16 +28,16 @@ const LevelSelectBox: React.FunctionComponent = () => {
       setIsListOpen={setIsListOpen}
       header={
         <HeaderSelectBox onClick={toggleList}>
-          <p>{levels[store.questionDetails.doKho]}</p>
+          <p>{levels[store.questionDetails.level - 1]}</p>
           <StyledIcon icon={isListOpen ? faAngleDown : faAngleUp} />
         </HeaderSelectBox>
       }
     >
       {levels.map((level, index) => (
         <StyledItem
-          className={store.questionDetails.doKho === index ? 'active' : ''}
+          className={store.questionDetails.level === index + 1 ? 'active' : ''}
           key={index}
-          onClick={() => selectItem(index)}
+          onClick={() => selectItem(index + 1)}
         >
           {level}
         </StyledItem>

@@ -9,7 +9,7 @@ import {BaseColor} from '../../../theme';
 import {useLectureStore} from '../store';
 
 type ItemSelectBox = {
-  id: number;
+  _id: string;
   name: string;
 };
 
@@ -23,7 +23,7 @@ const ChapterSelectBox: React.FunctionComponent = () => {
 
   const selectItem = (item: ItemSelectBox) => {
     setIsListOpen(false);
-    store.questionDetails.chuong = item;
+    store.questionDetails.chapter = item;
   };
 
   return (
@@ -32,14 +32,14 @@ const ChapterSelectBox: React.FunctionComponent = () => {
       setIsListOpen={setIsListOpen}
       header={
         <HeaderSelectBox onClick={toggleList}>
-          <p>{store.questionDetails.chuong.name}</p>
+          <p>{store.questionDetails.chapter?.name || 'undefine'}</p>
           <StyledIcon icon={isListOpen ? faAngleDown : faAngleUp} />
         </HeaderSelectBox>
       }
     >
-      {store.getChapter().map((item, index) => (
+      {store.chapters.map((item, index) => (
         <StyledItem
-          className={store.questionDetails.chuong.id === item.id ? 'active' : ''}
+          className={store.questionDetails.chapter._id === item._id ? 'active' : ''}
           key={index}
           onClick={() => selectItem(item)}
         >

@@ -23,41 +23,37 @@ const CreateQuestion: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     store.questionDetails = {
-      id: 11,
-      noiDung: '',
-      doKho: 0,
-      hocPhan: {
-        id: 0,
+      _id: '',
+      content: '',
+      level: 0,
+      module: {
+        _id: '',
         name: '',
       },
-      chuong: {
-        id: 0,
+      chapter: {
+        _id: '',
         name: '',
       },
-      listCauHoi: [
-        {id: 1, noiDung: '', laCauTraLoiDung: true},
-        {id: 2, noiDung: '', laCauTraLoiDung: false},
-        {id: 3, noiDung: '', laCauTraLoiDung: false},
-        {id: 4, noiDung: '', laCauTraLoiDung: false},
+      answers: [
+        {_id: '', content: '', isTrue: true},
+        {_id: '', content: '', isTrue: false},
+        {_id: '', content: '', isTrue: false},
+        {_id: '', content: '', isTrue: false},
       ],
     };
   }, []);
 
-  const handleRadioChange = (answerId: number) => {
-    store.questionDetails.listCauHoi.find(
-      (cauHoi) => cauHoi.laCauTraLoiDung === true,
-    )!.laCauTraLoiDung = false;
-    store.questionDetails.listCauHoi.find(
-      (cauHoi) => cauHoi.id === answerId,
-    )!.laCauTraLoiDung = true;
+  const handleRadioChange = (index: number) => {
+    store.questionDetails.answers.find((cauHoi) => cauHoi.isTrue === true)!.isTrue = false;
+    store.questionDetails.answers[index].isTrue = true;
   };
 
   const handleChange = (index: number, value: string) => {
-    store.questionDetails.listCauHoi[index].noiDung = value;
+    store.questionDetails.answers[index].content = value;
   };
 
   const handleChangeNoiDung = (value: string) => {
-    store.questionDetails.noiDung = value;
+    store.questionDetails.content = value;
   };
 
   const handleSaveBottonClick = () => {
@@ -69,6 +65,19 @@ const CreateQuestion: React.FunctionComponent = () => {
     //   hocPhan: store.questionDetails.hocPhan.name,
     //   nguoiTao: '@default',
     // });
+    const question: any = {
+      content: store.questionDetails.content,
+      chapterId: store.questionDetails.chapter._id,
+      answers: store.questionDetails.answers.map((answer) => ({
+        content: answer.content,
+        isTrue: answer.isTrue,
+      })),
+      level: store.questionDetails.level,
+      userId: localStorage.getItem('userId'),
+      dateCreate: '2020-10-10',
+    };
+
+    store.createQuestion(question);
     console.log('post data details');
     history.push('/lecturer/questions');
   };
@@ -94,7 +103,7 @@ const CreateQuestion: React.FunctionComponent = () => {
             <Grid xl={10}>
               <StyledValue>
                 <StyledTextArea
-                  value={store.questionDetails.noiDung}
+                  value={store.questionDetails.content}
                   onChange={(event) => handleChangeNoiDung(event.target.value)}
                 />
               </StyledValue>
@@ -105,17 +114,17 @@ const CreateQuestion: React.FunctionComponent = () => {
               <StyledKey>Câu trả lời:</StyledKey>
             </Grid>
             <Grid xl={10}>
-              {store.questionDetails.listCauHoi.map((cauHoi, index) => (
+              {store.questionDetails.answers.map((cauHoi, index) => (
                 <RadioWrapper key={index}>
                   <FontAwesomeIcon
-                    onClick={() => handleRadioChange(cauHoi.id)}
-                    icon={cauHoi.laCauTraLoiDung ? faCircleCheck : faCircleUncheck}
+                    onClick={() => handleRadioChange(index)}
+                    icon={cauHoi.isTrue ? faCircleCheck : faCircleUncheck}
                   />
                   <NoiDungCauHoi>
                     <input
                       style={{width: '100%', height: '3rem'}}
                       type="text"
-                      value={cauHoi.noiDung}
+                      value={cauHoi.content}
                       onChange={(evevt) => handleChange(index, evevt.target.value)}
                     />
                   </NoiDungCauHoi>
