@@ -8,7 +8,7 @@ import {NavLink} from 'react-router-dom';
 import {BaseColor} from '../../theme';
 import avatar from '../../assets/avatar.jpg';
 import {Role} from '../../types';
-import logo from '../../assets/Logo.png';
+import logo from '../../assets/quizizz.png';
 
 import {UserPanel} from './UserPanel';
 
@@ -33,6 +33,7 @@ const getNavLinks = (role: Role): NavLinkType[] => {
     const listPanelItems: NavLinkType[] = [
       {name: 'Câu hỏi', path: '/lecturer/questions'},
       {name: 'Đề thi', path: '/lecturer/exam-questions'},
+      {name: 'Kỳ thi', path: '/lecturer/exams'},
     ];
 
     return listPanelItems;
