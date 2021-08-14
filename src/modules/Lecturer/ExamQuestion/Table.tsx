@@ -13,7 +13,7 @@ const Table: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   React.useEffect(() => {
-    store.getQuestions({page: 1, limit: store.pagination.limit});
+    store.getExamQuestions({page: 1, limit: store.pagination.limit});
   }, []);
 
   return (
@@ -23,28 +23,26 @@ const Table: React.FunctionComponent = () => {
         <THeader>
           <Row>
             <Column style={{width: '5rem'}}>STT</Column>
-            <Column style={{width: '50rem'}}>Nội dung</Column>
+            <Column style={{width: '40rem'}}>Nội dung</Column>
             <Column style={{}}>Học phần</Column>
             <Column>Số câu hỏi</Column>
-            <Column style={{}}>Kỳ thi</Column>
             <Column style={{width: '20rem'}}>Hành động</Column>
           </Row>
         </THeader>
         <TBody>
-          {store.questions.map((cauHoi, index) => (
-            <Row key={cauHoi._id}>
+          {store.examQuestions.map((examQuestion, index) => (
+            <Row key={index}>
               <Cell>{index + 1}</Cell>
               <Cell>
-                <StyledNavLink to={`exam-questions/details/${cauHoi._id}`}>
-                  {cauHoi.content}
+                <StyledNavLink to={`exam-questions/details/${examQuestion._id}`}>
+                  {examQuestion.content}
                 </StyledNavLink>
               </Cell>
-              <Cell>{cauHoi.level}</Cell>
-              <Cell>{cauHoi.module}</Cell>
-              <Cell>{cauHoi.user}</Cell>
+              <Cell>{examQuestion.module}</Cell>
+              <Cell>{examQuestion.numberOfQuestions}</Cell>
               <Cell>
-                <StyledLink to={`exam-questions/details/${cauHoi._id}`}>Xem</StyledLink>
-                <a onClick={() => store.deleteQuestion(cauHoi._id)}>Xoá</a>
+                <StyledLink to={`exam-questions/details/${examQuestion._id}`}>Xem</StyledLink>
+                <a onClick={() => store.deleteQuestion(examQuestion._id)}>Xoá</a>
               </Cell>
             </Row>
           ))}
@@ -53,7 +51,7 @@ const Table: React.FunctionComponent = () => {
       <Pagination
         pageTotal={store.pagination.pageTotal}
         onChange={({selected}) => {
-          store.getQuestions({page: selected + 1, limit: store.pagination.limit});
+          store.getExamQuestions({page: selected + 1, limit: store.pagination.limit});
         }}
       />
     </TableWrapper>
