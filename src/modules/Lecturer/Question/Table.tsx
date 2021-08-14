@@ -40,7 +40,7 @@ const Table: React.FunctionComponent = () => {
                   {cauHoi.content}
                 </StyledNavLink>
               </Cell>
-              <Cell>{levels[cauHoi.level - 1]}</Cell>
+              <Cell>{levels[cauHoi.level]}</Cell>
               <Cell>{cauHoi.module}</Cell>
               <Cell>{cauHoi.user}</Cell>
               <Cell>

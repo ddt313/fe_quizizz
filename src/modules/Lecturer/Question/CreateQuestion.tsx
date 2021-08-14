@@ -12,10 +12,8 @@ import Grid from '../../../components/Grid';
 import Navbar from '../../../components/Navbar';
 import {Role} from '../../../types';
 import {useLectureStore} from '../store';
-
-import ChapterSelectBox from './ChapterSelectBox';
-import LevelSelectBox from './LevelSelectBox';
-import ModuleSelectBox from './ModuleSelectBox';
+import SelectBox from '../../../components/SelectBox';
+import {levels} from '../../../config';
 
 const CreateQuestion: React.FunctionComponent = () => {
   const history = useHistory();
@@ -41,6 +39,7 @@ const CreateQuestion: React.FunctionComponent = () => {
         {_id: '', content: '', isTrue: false},
       ],
     };
+    store.getModules();
   }, []);
 
   const handleRadioChange = (index: number) => {
@@ -138,7 +137,14 @@ const CreateQuestion: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
-                <ModuleSelectBox />
+                <SelectBox
+                  items={store.modules}
+                  defaultSelected={store.modules[0] ? store.modules[0] : {_id: '', name: ''}}
+                  onChange={(item) => {
+                    store.questionDetails.module = item;
+                    store.getChapter(item._id);
+                  }}
+                />
               </div>
             </Grid>
           </WrapperContentItem>
@@ -148,7 +154,13 @@ const CreateQuestion: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
-                <ChapterSelectBox />
+                <SelectBox
+                  items={store.chapters}
+                  defaultSelected={store.chapters[0] ? store.chapters[0] : {_id: '', name: ''}}
+                  onChange={(item) => {
+                    store.questionDetails.chapter = item;
+                  }}
+                />
               </div>
             </Grid>
           </WrapperContentItem>
@@ -156,7 +168,13 @@ const CreateQuestion: React.FunctionComponent = () => {
             <Grid xl={2}>Độ khó:</Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
-                <LevelSelectBox />
+                <SelectBox
+                  items={levels.map((level, index) => ({_id: index + '', name: level}))}
+                  defaultSelected={{_id: '1', name: levels[0]}}
+                  onChange={(item) => {
+                    store.questionDetails.level = +item._id;
+                  }}
+                />
               </div>
             </Grid>
           </WrapperContentItem>

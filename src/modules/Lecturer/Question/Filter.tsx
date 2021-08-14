@@ -1,29 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import SelectBox from '../../../components/SelectBox';
 import {BaseColor} from '../../../theme';
 
-import SelectBoxFilter from './SelectBoxFilter';
 import Search from './Search';
 
 const Filter: React.FunctionComponent = () => {
   const dataDoKho = [
-    {id: '1', name: 'Dễ'},
-    {id: '2', name: 'Trung bình'},
-    {id: '3', name: 'Khó'},
+    {_id: '1', name: 'Dễ'},
+    {_id: '2', name: 'Trung bình'},
+    {_id: '3', name: 'Khó'},
   ];
 
   const dataHocPhan = [
-    {id: '1', name: 'Kiểm thử'},
-    {id: '2', name: 'Đồ án'},
-    {id: '3', name: 'C++'},
-    {id: '4', name: 'Java'},
+    {_id: '1', name: 'Kiểm thử'},
+    {_id: '2', name: 'Đồ án'},
+    {_id: '3', name: 'C++'},
+    {_id: '4', name: 'Java'},
   ];
 
   return (
     <StyledFilter>
-      <SelectBoxFilter defaultSelected="Tất cả độ khó" items={dataDoKho} />
-      <SelectBoxFilter defaultSelected="Tất cả học phần" items={dataHocPhan} />
+      <SelectBox
+        items={dataDoKho}
+        defaultSelected={dataDoKho[0]}
+        onChange={() => {
+          //
+        }}
+      />
+      <SelectBox
+        items={dataHocPhan}
+        defaultSelected={dataHocPhan[0]}
+        onChange={() => {
+          //
+        }}
+      />
       <Search />
     </StyledFilter>
   );

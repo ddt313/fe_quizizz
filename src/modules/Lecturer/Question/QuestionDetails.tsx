@@ -13,10 +13,7 @@ import Navbar from '../../../components/Navbar';
 import {Role} from '../../../types';
 import {useLectureStore} from '../store';
 import {levels} from '../../../config';
-
-import ModuleSelectBox from './ModuleSelectBox';
-import LevelSelectBox from './LevelSelectBox';
-import ChapterSelectBox from './ChapterSelectBox';
+import SelectBox from '../../../components/SelectBox';
 
 const QuestionDetails: React.FunctionComponent = () => {
   const store = useLectureStore();
@@ -27,6 +24,7 @@ const QuestionDetails: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     store.getQuestionDetails(id);
+    store.getModules();
   }, []);
 
   React.useEffect(() => {
@@ -132,7 +130,16 @@ const QuestionDetails: React.FunctionComponent = () => {
             <Grid xl={10}>
               {isEdit ? (
                 <div style={{width: '22rem'}}>
-                  <ModuleSelectBox />
+                  <SelectBox
+                    items={store.modules}
+                    defaultSelected={
+                      store.modules[0] ? store.modules[0] : {_id: '', name: 'Chọn Học Phần'}
+                    }
+                    onChange={(item) => {
+                      store.getChapter(item._id);
+                      store.questionDetails.module = item;
+                    }}
+                  />
                 </div>
               ) : (
                 store.questionDetails.module.name
@@ -145,8 +152,14 @@ const QuestionDetails: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               {isEdit ? (
-                <div style={{width: '22rem'}}>
-                  <ChapterSelectBox />
+                <div style={{width: '30rem'}}>
+                  <SelectBox
+                    items={store.chapters}
+                    defaultSelected={store.chapters[0] ? store.chapters[0] : {_id: '', name: ''}}
+                    onChange={(item) => {
+                      store.questionDetails.chapter = item;
+                    }}
+                  />
                 </div>
               ) : (
                 store.questionDetails.chapter.name
@@ -158,10 +171,19 @@ const QuestionDetails: React.FunctionComponent = () => {
             <Grid xl={10}>
               {isEdit ? (
                 <div style={{width: '22rem'}}>
-                  <LevelSelectBox />
+                  <SelectBox
+                    items={levels.map((level, index) => ({_id: index + '', name: level}))}
+                    defaultSelected={{
+                      _id: store.questionDetails.level.toString(),
+                      name: levels[store.questionDetails.level],
+                    }}
+                    onChange={(item) => {
+                      store.questionDetails.level = +item._id;
+                    }}
+                  />
                 </div>
               ) : (
-                levels[store.questionDetails.level - 1]
+                levels[store.questionDetails.level]
               )}
             </Grid>
           </WrapperContentItem>
