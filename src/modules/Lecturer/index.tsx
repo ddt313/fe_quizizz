@@ -1,6 +1,7 @@
 import React from 'react';
 import {Redirect, Route, Switch, useRouteMatch} from 'react-router-dom';
 
+import ExamManagement from './Exam';
 import ExamQuestionManagement from './ExamQuestion';
 import QuestionManagement from './Question';
 import {LectureStoreProvider} from './store';
@@ -16,6 +17,7 @@ const LecturerManagement: React.FunctionComponent = () => {
           <Switch>
             <Route path={`${path}/questions`} component={QuestionManagement} />
             <Route path={`${path}/exam-questions`} component={ExamQuestionManagement} />
+            <Route path={`${path}/exams`} component={ExamManagement} />
           </Switch>
         </LectureStoreProvider>
       )}
