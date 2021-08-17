@@ -39,8 +39,8 @@ const getNavLinks = (role: Role): NavLinkType[] => {
     return listPanelItems;
   } else {
     const listPanelItems: NavLinkType[] = [
-      {name: 'See Profile', path: '/profile'},
-      {name: 'Change Password', path: '/profile/change-password'},
+      {name: 'Kỳ thi', path: '/student/contests'},
+      {name: 'Lịch sử thi', path: '/student/contests-history'},
     ];
 
     return listPanelItems;
