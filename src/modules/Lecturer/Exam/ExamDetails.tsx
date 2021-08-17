@@ -15,7 +15,7 @@ import {useLectureStore} from '../store';
 import SelectBox from '../../../components/SelectBox';
 import MultipleSelectBox from '../../../components/MultipleSelectBox';
 import {getMomentFormatter} from '../../../infra/Datetime';
-import {dateFormat, minDate} from '../../../config';
+import {dateFormat, maxDate, minDate} from '../../../config';
 
 const ExamDetails: React.FunctionComponent = () => {
   const store = useLectureStore();
@@ -46,8 +46,7 @@ const ExamDetails: React.FunctionComponent = () => {
     setIsEdit(false);
   };
   const handleChangeNoiDung = (value: string) => {
-    // store.examQuestionDetails.content = value;
-    console.log(store.examDetails, value);
+    store.examDetails.name = value;
   };
 
   return (
@@ -124,7 +123,7 @@ const ExamDetails: React.FunctionComponent = () => {
                           inputProps={{leftIcon: 'calendar'}}
                           value={new Date(store.examDetails.examTime)}
                           minDate={minDate}
-                          maxDate={new Date(Date.now())}
+                          maxDate={maxDate}
                           onChange={(date: Date) => {
                             store.examDetails.examTime = date;
                           }}
@@ -145,7 +144,8 @@ const ExamDetails: React.FunctionComponent = () => {
                 <StyledValue>
                   {isEdit ? (
                     <div style={{width: '22rem'}}>
-                      <input
+                      <Input
+                        type="number"
                         value={store.examDetails.doingExamTime}
                         onChange={(event) => {
                           store.examDetails.doingExamTime = +event.target.value;
@@ -161,7 +161,6 @@ const ExamDetails: React.FunctionComponent = () => {
             <WrapperContentItem>
               <Grid xl={2}>
                 <StyledKey>Danh sách lớp:</StyledKey>
-                {/* {isEdit && <Button text="Thêm" onClick={() => setInAddQuestions(true)} />} */}
               </Grid>
               <Grid xl={10}>
                 <StyledValue>
@@ -173,9 +172,11 @@ const ExamDetails: React.FunctionComponent = () => {
                           onSelect={(items) => {
                             store.examDetails.class = items;
                           }}
-                          selectedItems={store.examDetails.class}
+                          selectedItems={[...store.examDetails.class]}
                         />
                       </div>
+                    ) : store.examDetails.class.length === 0 ? (
+                      'Trống'
                     ) : (
                       store.examDetails.class.map((c) => c.name + '; ')
                     )}
@@ -186,7 +187,14 @@ const ExamDetails: React.FunctionComponent = () => {
             <WrapperContentItem>
               <Grid xl={2}>
                 <StyledKey>Danh sách đề:</StyledKey>
-                {/* {isEdit && <Button text="Thêm" onClick={() => setInAddQuestions(true)} />} */}
+                {isEdit && (
+                  <Button
+                    text="Thêm"
+                    onClick={() => {
+                      /* */
+                    }}
+                  />
+                )}
               </Grid>
               <Grid xl={10}>
                 <StyledValue>
@@ -250,6 +258,10 @@ const StyledValue = styled.div``;
 const StyledTextArea = styled.textarea`
   width: 100%;
   height: 8rem;
+  font-family: 'Roboto';
+  font-size: 1.4rem;
+  border-radius: 0.5rem;
+  border: solid 0.1rem ${BaseColor.gray};
 `;
 
 const QuestionsWrapper = styled.div`
@@ -296,4 +308,11 @@ const DateInputWrapper = styled.div`
   input {
     padding: 2.1rem 0 2.1rem 3rem;
   }
+`;
+
+const Input = styled.input`
+  height: 3.8rem;
+  text-indent: 1rem;
+  border-radius: 0.5rem;
+  border: solid 0.1rem ${BaseColor.gray};
 `;
