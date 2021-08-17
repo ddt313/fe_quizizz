@@ -8,7 +8,7 @@ import {
 } from '@blueprintjs/select';
 import {Button} from '@blueprintjs/core';
 import styled, {css} from 'styled-components';
-import {faCheck, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faCheck} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {observer} from 'mobx-react';
 
@@ -19,15 +19,14 @@ type Props = {
   items: SelectBoxType[];
   selectedItems: SelectBoxType[];
   onSelect: (items: SelectBoxType[]) => void;
-  // isCreateNew: boolean;
 };
 
 const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Props) => {
   const {items, selectedItems, onSelect} = props;
 
   const [query, setQuery] = React.useState('');
-  // const [workingSkills, setWorkingSkills] = React.useState(workingSkillList.sort());
 
+  console.log('selectedItems:', selectedItems);
   const renderItem: ItemRenderer<SelectBoxType> = (item, {handleClick, modifiers}) => {
     if (!modifiers.matchesPredicate) {
       return null;
@@ -36,7 +35,9 @@ const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Pr
     return (
       <MultipleItem onClick={handleClick}>
         <p>{item.name}</p>
-        {selectedItems.indexOf(item) > -1 && <IconCheck icon={faCheck} />}
+        {selectedItems.some((selectedItem) => selectedItem._id === item._id) && (
+          <IconCheck icon={faCheck} />
+        )}
       </MultipleItem>
     );
   };
@@ -56,8 +57,7 @@ const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Pr
         setQuery('');
       }}
     >
-      <p>Create &ldquo;{query}&rdquo;</p>
-      <IconCheck icon={faPlus} />
+      <p>No Result for &ldquo;{query}&rdquo;</p>
     </MultipleItem>
   );
 
@@ -77,7 +77,7 @@ const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Pr
       }}
       itemListRenderer={renderListItem}
       itemRenderer={renderItem}
-      itemsEqual={(itemA, itemB) => itemA._id.toUpperCase() === itemB._id.toLocaleUpperCase()}
+      itemsEqual={(itemA, itemB) => itemA._id == itemB._id}
       fill
       popoverProps={{position: 'right'}}
       resetOnSelect
@@ -89,13 +89,13 @@ const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Pr
       onQueryChange={(_, event) => {
         setQuery(event?.target.value || '');
       }}
-      items={items.filter((item) => item.name.toUpperCase().includes(query.toLocaleUpperCase()))}
+      items={items.filter((item) => item.name.toUpperCase().includes(query.toUpperCase()))}
       selectedItems={selectedItems}
       onItemSelect={(item) => {
-        if (selectedItems.indexOf(item) === -1) {
-          onSelect([...selectedItems, item]);
+        if (selectedItems.some((selectedItem) => selectedItem._id === item._id)) {
+          onSelect(selectedItems.filter((selectedItem) => selectedItem._id !== item._id));
         } else {
-          onSelect(selectedItems.filter((selectedItem) => selectedItem !== item));
+          onSelect([...selectedItems, item]);
         }
       }}
     />
