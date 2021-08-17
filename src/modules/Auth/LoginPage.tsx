@@ -3,9 +3,9 @@ import {Link, useHistory} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 import {observer} from 'mobx-react';
 
-import background from '../../assets/background.png';
+import background from '../../assets/bkbg.jpg';
 import {BaseColor} from '../../theme';
-import logo from '../../assets/Logo.png';
+import logo from '../../assets/quizizz.png';
 
 import {useAuthStore} from './store';
 
