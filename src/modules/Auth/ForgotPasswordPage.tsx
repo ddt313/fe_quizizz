@@ -4,8 +4,8 @@ import {Link, useHistory} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 
 import {BaseColor} from '../../theme/color';
-import background from '../../assets/background.png';
-import logo from '../../assets/Logo.png';
+import background from '../../assets/bkbg.jpg';
+import logo from '../../assets/quizizz.png';
 import {post} from '../../infra/http';
 import {emailRegex} from '../../infra/email';
 const RecoveryToaster = Toaster.create({
