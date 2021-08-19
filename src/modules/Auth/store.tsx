@@ -7,8 +7,7 @@ type Auth = {
   email: string;
   password: string;
 };
-type AuthenticationResponse = Auth & {
-  statusCode: number;
+type AuthenticationResponse = {
   payload: {
     token: string;
     user: {
@@ -30,18 +29,15 @@ class AuthStore {
 
   @asyncAction
   public *Login(data: Auth) {
-    const responseOfFetchAuth: AuthenticationResponse = yield post('/auth/login', {
+    const response: AuthenticationResponse = yield post('/auth/login', {
       email: data.email,
       password: data.password,
     });
 
-    const user = responseOfFetchAuth;
-
-    this.email = user.email;
-    this.role = user.payload.user.role;
-    localStorage.setItem('token', user.payload.token);
-    localStorage.setItem('name', user.payload.user.name);
-    localStorage.setItem('role', user.payload.user.role);
+    localStorage.setItem('token', response.payload.token);
+    localStorage.setItem('name', response.payload.user.name);
+    localStorage.setItem('role', response.payload.user.role);
+    localStorage.setItem('id', response.payload.user.id);
   }
 
   @asyncAction
@@ -60,6 +56,7 @@ class AuthStore {
     localStorage.removeItem('token');
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    localStorage.removeItem('id');
   }
 }
 const AuthStoreContext = React.createContext({} as AuthStore);

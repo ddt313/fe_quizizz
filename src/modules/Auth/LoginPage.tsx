@@ -28,9 +28,12 @@ const LoginPage: React.FunctionComponent = () => {
 
     await store.Login({email, password});
 
-    if (localStorage.getItem('token')) {
-      history.push('/sioux-care/request');
-    }
+    if (localStorage.getItem('token'))
+      if (localStorage.getItem('role') === 'Lecturer') {
+        history.push('/lecture/questions');
+      } else if (localStorage.getItem('role') === 'Student') {
+        history.push('/student/contests');
+      }
   };
 
   return (
@@ -38,11 +41,11 @@ const LoginPage: React.FunctionComponent = () => {
       <LoginContainer>
         <LoginFormContainer>
           <LoginForm onSubmit={onLogin}>
-            <LoginTitle>{'login'}</LoginTitle>
+            <LoginTitle>{'Login'}</LoginTitle>
             <InputForm
               value={email}
               type="text"
-              placeholder={'enter_email'}
+              placeholder="Nhập email"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setEmail(event.target.value);
               }}
@@ -50,11 +53,11 @@ const LoginPage: React.FunctionComponent = () => {
                 setError({...error, email: event.target.value === ''});
               }}
             />
-            {error.email && <ErrorMessage>{'field_not_filled'}</ErrorMessage>}
+            {error.email && <ErrorMessage>{'Nhập email'}</ErrorMessage>}
             <InputForm
               value={password}
               type="password"
-              placeholder={'enter_password'}
+              placeholder="Nhập mật khẩu"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setPassword(event.target.value);
               }}
@@ -62,8 +65,8 @@ const LoginPage: React.FunctionComponent = () => {
                 setError({...error, password: event.target.value === ''});
               }}
             />
-            {error.password && <ErrorMessage>{'field_not_filled'}</ErrorMessage>}
-            <ForgetPassword to="/auth/forget">{`${'forgot_password.title'}?`}</ForgetPassword>
+            {error.password && <ErrorMessage>{'Nhập password'}</ErrorMessage>}
+            <ForgetPassword to="/auth/forget">{`${'Quên mật khẩu'}?`}</ForgetPassword>
             <LoginButton onSubmit={onLogin} type="submit">
               {'login'}
             </LoginButton>

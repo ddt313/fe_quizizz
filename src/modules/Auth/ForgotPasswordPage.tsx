@@ -26,14 +26,14 @@ const ForgotPasswordPage: React.FunctionComponent = () => {
     if (error.email) return;
     if (!emailRegex.test(email)) {
       RecoveryToaster.show({
-        message: 'input_email',
+        message: 'Nhập Email',
         intent: Intent.DANGER,
         timeout: 3000,
       });
     }
     await post('/auth/forgot-password', {email});
     RecoveryToaster.show({
-      message: 'message_recovery',
+      message: 'Liên kết khôi phục đã được gửi đến email của bạn',
       intent: Intent.SUCCESS,
       timeout: 3000,
     });
@@ -50,12 +50,14 @@ const ForgotPasswordPage: React.FunctionComponent = () => {
       <ForgotPasswordContainer>
         <ForgotPasswordFormContainer>
           <ForgotPasswordForm onSubmit={onSendRecoveryLink}>
-            <ForgotPasswordTitle>{'forgot_password.title'}</ForgotPasswordTitle>
-            <ResetInstruction>{'forgot_password.reset_instruction_message'}</ResetInstruction>
+            <ForgotPasswordTitle>{'Quên mật khẩu'}</ForgotPasswordTitle>
+            <ResetInstruction>
+              {'Nhập Email của bạn vào bên dưới để nhận hướng dẫn đặt lại'}
+            </ResetInstruction>
             <InputForm
               value={email}
               type="text"
-              placeholder={'enter_email'}
+              placeholder={'Nhập email'}
               onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                 setError({
                   ...error,
@@ -66,9 +68,9 @@ const ForgotPasswordPage: React.FunctionComponent = () => {
                 setEmail(event.target.value);
               }}
             />
-            {error.email && <ErrorMessage>{'field_not_filled'}</ErrorMessage>}
+            {error.email && <ErrorMessage>{'Email chưa nhập'}</ErrorMessage>}
             <ForgotPasswordButton onSubmit={onSendRecoveryLink}>
-              {'forgot_password.send_recovery_link'}
+              {'Gửi liên kết khôi phục'}
             </ForgotPasswordButton>
           </ForgotPasswordForm>
         </ForgotPasswordFormContainer>
@@ -81,7 +83,7 @@ const ForgotPasswordPage: React.FunctionComponent = () => {
 
               <Link to="/" style={{marginBottom: '2rem', color: 'white'}}>
                 <Icon icon="arrow-left" style={{marginRight: '1rem'}} />
-                {'forgot_password.back_to_login'}
+                {'Quay trở lại trang Login'}
               </Link>
             </OverlayPanel>
           </Overlay>
