@@ -66,7 +66,6 @@ const CreateExamQuestion: React.FunctionComponent = () => {
   };
   const handleChangeNoiDung = (value: string) => {
     store.examQuestionDetails.content = value;
-    console.log(store.examQuestionDetails);
   };
 
   const handleAddQuestion = (question: QuestionTable) => {
@@ -149,7 +148,6 @@ const CreateExamQuestion: React.FunctionComponent = () => {
                     selectedItem={store.examQuestionDetails.module}
                     onChange={(item) => {
                       store.examQuestionDetails.module = item;
-                      // console.log(store.questionDetails);
                     }}
                   />
                 </div>
@@ -168,7 +166,6 @@ const CreateExamQuestion: React.FunctionComponent = () => {
                     selectedItem={store.examQuestionDetails.exam}
                     onChange={(item) => {
                       store.examQuestionDetails.exam = item;
-                      console.log('exam question', store.examQuestionDetails);
                     }}
                   />
                 </div>

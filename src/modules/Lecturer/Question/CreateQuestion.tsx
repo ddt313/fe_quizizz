@@ -137,7 +137,6 @@ const CreateQuestion: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
-                {console.log('hocphan')}
                 <SelectBox
                   items={store.modules[0] ? store.modules : []}
                   selectedItem={store.questionDetails.module}

@@ -57,7 +57,6 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
   };
   const handleChangeNoiDung = (value: string) => {
     store.examQuestionDetails.content = value;
-    console.log(store.examQuestionDetails);
   };
 
   const handleAddQuestion = (question: QuestionTable) => {
@@ -155,7 +154,6 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
                       selectedItem={store.examQuestionDetails.module}
                       onChange={(item) => {
                         store.examQuestionDetails.module = item;
-                        // console.log(store.questionDetails);
                       }}
                     />
                   </div>

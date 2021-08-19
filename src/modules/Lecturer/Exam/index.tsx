@@ -1,6 +1,7 @@
 import React from 'react';
 import {Redirect, Route, Switch, useRouteMatch} from 'react-router-dom';
 
+import CreateExam from './CreateExam';
 import ExamDetails from './ExamDetails';
 import Exams from './Exams';
 
@@ -13,6 +14,7 @@ const ExamManagement: React.FunctionComponent = () => {
       {token && (
         <Switch>
           <Route exact path={`${path}`} component={Exams} />
+          <Route exact path={`${path}/create`} component={CreateExam} />
           <Route exact path={`${path}/details/:id`} component={ExamDetails} />
         </Switch>
       )}

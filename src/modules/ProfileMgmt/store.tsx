@@ -42,6 +42,7 @@ class ProfileStore {
 
   @action // Will be asyncAction after having an API for this one
   public updateUser(user: User) {
+    return;
     console.log(user);
   }
 

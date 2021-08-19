@@ -46,8 +46,6 @@ const QuestionDetails: React.FunctionComponent = () => {
     store.questionDetails.answers.find((cauHoi) => cauHoi.isTrue === true)!.isTrue = false;
     store.questionDetails.answers[index].isTrue = true;
     setIsRender(!isRender);
-    console.log(isRender);
-    console.log(store.questionDetails.answers);
   };
 
   const handleChange = (index: number, value: string) => {
@@ -65,7 +63,6 @@ const QuestionDetails: React.FunctionComponent = () => {
     setIsEdit(false);
     // post data
     store.updateQuestion(store.questionDetails);
-    console.log('post data details');
   };
   const handleCancelBottonClick = () => {
     setIsEdit(false);

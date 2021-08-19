@@ -26,7 +26,6 @@ const WorkingSkillMultipleSelectBox: React.FunctionComponent<Props> = (props: Pr
 
   const [query, setQuery] = React.useState('');
 
-  console.log('selectedItems:', selectedItems);
   const renderItem: ItemRenderer<SelectBoxType> = (item, {handleClick, modifiers}) => {
     if (!modifiers.matchesPredicate) {
       return null;

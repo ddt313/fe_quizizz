@@ -108,7 +108,18 @@ class LecturerStore {
 
   @observable exams: ExamTable[] = [];
 
-  @observable examDetails: Exam = {} as Exam;
+  @observable examDetails: Exam = {
+    _id: '',
+    name: '',
+    examTime: new Date(),
+    doingExamTime: 0,
+    class: [],
+    examQuestions: [],
+    module: {
+      _id: '',
+      name: '',
+    },
+  };
 
   @observable questions: QuestionTable[] = [];
 
@@ -194,7 +205,6 @@ class LecturerStore {
 
     const data: QuestionTableResponse = yield get(`/questions?${queryString}`);
 
-    console.log('data:', data);
     this.questions = data.payload.questionTable;
     this.pagination.pageTotal = data.payload.pageTotal;
     this.pagination.limit = data.payload.limit;
@@ -203,15 +213,11 @@ class LecturerStore {
   public *getModules() {
     const data: ModuleResponse = yield get('/modules');
 
-    console.log('data modules:', data);
     this.modules = data.payload.modules;
   }
 
   public *getQuestionDetails(id: string) {
-    console.log('id', id);
     const data: QuestionDetails = yield get(`/questions/details/${id}`);
-
-    console.log('details:', data);
 
     this.questionDetails = data;
   }
@@ -265,7 +271,6 @@ class LecturerStore {
     const data: ExamQuestionDetails = yield get(`/exam-questions/details/${id}`);
 
     this.examQuestionDetails = data;
-    console.log('exam question data:', data);
   }
 
   public *deleteExamQuestion(id: string) {
@@ -278,8 +283,11 @@ class LecturerStore {
   }
 
   public *createExamQuestion(data: any) {
-    console.log('create exam question', data);
     yield post(`/exam-questions`, data);
+  }
+
+  public *createExam(data: any) {
+    yield post(`/exams`, data);
   }
 }
 

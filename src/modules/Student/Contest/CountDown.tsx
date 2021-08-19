@@ -13,7 +13,6 @@ type Props = {
 const CountDown: React.FunctionComponent<Props> = ({time}: Props) => {
   const store = useStudentStore();
 
-  console.log('countdown', time);
   const renderer = ({
     hours,
     minutes,
