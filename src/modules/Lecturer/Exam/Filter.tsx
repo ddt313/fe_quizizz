@@ -22,20 +22,24 @@ const Filter: React.FunctionComponent = () => {
 
   return (
     <StyledFilter>
-      <SelectBox
-        items={dataDoKho}
-        selectedItem={dataDoKho[0]}
-        onChange={() => {
-          //
-        }}
-      />
-      <SelectBox
-        items={dataHocPhan}
-        selectedItem={dataHocPhan[0]}
-        onChange={() => {
-          //
-        }}
-      />
+      <div style={{width: '45rem', marginRight: '2rem'}}>
+        <SelectBox
+          items={dataDoKho}
+          selectedItem={dataDoKho[0]}
+          onChange={() => {
+            //
+          }}
+        />
+      </div>
+      <div style={{width: '45rem', marginRight: '2rem'}}>
+        <SelectBox
+          items={dataHocPhan}
+          selectedItem={dataHocPhan[0]}
+          onChange={() => {
+            //
+          }}
+        />
+      </div>
       <Search />
     </StyledFilter>
   );

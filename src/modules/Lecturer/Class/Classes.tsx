@@ -1,11 +1,8 @@
 import {observer} from 'mobx-react';
 import React from 'react';
-import {useHistory} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 
-import Button from '../../../components/Button';
 import Container from '../../../components/Container';
-// import Footer from '../../../components/Footer';
 import Navbar from '../../../components/Navbar';
 import {Role} from '../../../types';
 import {useLectureStore} from '../store';
@@ -13,7 +10,6 @@ import {useLectureStore} from '../store';
 import Table from './Table';
 
 const Classes: React.FunctionComponent = () => {
-  const history = useHistory();
   const store = useLectureStore();
 
   React.useEffect(() => {
@@ -26,9 +22,6 @@ const Classes: React.FunctionComponent = () => {
       <Container>
         <TitleWrapper>
           <Title>Danh sách lớp học phần</Title>
-          <ButtonWrapper>
-            <Button text="Create" onClick={() => history.push('/lecturer/questions/create')} />
-          </ButtonWrapper>
         </TitleWrapper>
         <Table />
       </Container>
@@ -51,8 +44,4 @@ const Title = styled.div`
     font-weight: bold;
     color: ${theme.colors.primary};
   `}
-`;
-
-const ButtonWrapper = styled.div`
-  padding-top: 4.2rem;
 `;

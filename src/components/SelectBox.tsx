@@ -58,7 +58,7 @@ export default observer(SelectBox);
 
 const SelectBoxWrapper = styled.div`
   display: flex;
-  width: 60%;
+  /* width: 60%; */
   padding: 0.1rem 0 0.1rem 1rem;
   font-size: 1.4rem;
   text-align: left;

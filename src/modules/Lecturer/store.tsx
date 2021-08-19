@@ -94,6 +94,15 @@ type Exam = {
     _id: string;
     name: string;
   };
+  finished?: {
+    _id: string;
+    studentId: {
+      _id: string;
+      studentId: string;
+      name: string;
+    };
+    score: number;
+  }[];
 };
 
 type NameClass = {
@@ -106,12 +115,42 @@ type Class = {
   name: string;
   module: string;
   numberOfStudents: number;
+  scholastic: string;
+};
+
+type ClassDetails = {
+  _id: string;
+  name: string;
+  module: {
+    _id: string;
+    name: string;
+  };
+  scholastic: {
+    _id: string;
+    name: string;
+  };
+  students: {
+    _id: string;
+    studentId: string;
+    name: string;
+  }[];
 };
 
 class LecturerStore {
   @observable userId = localStorage.getItem('id');
 
   @observable classes: Class[] = [];
+
+  @observable classDetails: ClassDetails = {
+    _id: '',
+    name: '',
+    module: {
+      _id: '',
+      name: '',
+    },
+    scholastic: {_id: '', name: ''},
+    students: [],
+  };
 
   @observable nameClasses: NameClass[] = [];
 
@@ -128,6 +167,7 @@ class LecturerStore {
       _id: '',
       name: '',
     },
+    finished: [],
   };
 
   @observable questions: QuestionTable[] = [];
@@ -157,7 +197,7 @@ class LecturerStore {
 
   @observable pagination: Pagination = {
     pageTotal: 0,
-    limit: 10,
+    limit: 6,
   };
 
   @observable questionDetails: QuestionDetails = {
@@ -187,6 +227,10 @@ class LecturerStore {
 
   public *getClasses() {
     this.classes = yield get(`/classes/${this.userId}`);
+  }
+
+  public *getClassById(id: string) {
+    this.classDetails = yield get(`/classes/details/${id}`);
   }
 
   public *getListNameClasses() {

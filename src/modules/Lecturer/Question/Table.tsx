@@ -14,7 +14,7 @@ const Table: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   React.useEffect(() => {
-    store.getQuestions({page: 1, limit: store.pagination.limit});
+    store.getQuestions({page: 1, limit: 6});
   }, []);
 
   return (

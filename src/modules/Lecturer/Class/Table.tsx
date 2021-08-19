@@ -6,11 +6,23 @@ import {observer} from 'mobx-react';
 import Pagination from '../../../components/Pagination';
 import {BaseColor} from '../../../theme';
 import {useLectureStore} from '../store';
+import SelectBox from '../../../components/SelectBox';
 
-import Filter from './Filter';
+import Search from './Search';
+
+// import Filter from './Filter';
 
 const Table: React.FunctionComponent = () => {
   const store = useLectureStore();
+
+  const [scholastic, setScholastic] = React.useState({
+    _id: '1',
+    name: 'Học kỳ 1 năm học 2020-2021',
+  });
+  const [module, setModule] = React.useState({
+    _id: '1',
+    name: 'Java',
+  });
 
   React.useEffect(() => {
     store.getClasses();
@@ -18,16 +30,47 @@ const Table: React.FunctionComponent = () => {
 
   return (
     <TableWrapper>
-      <Filter />
+      {/* <Filter /> */}
+      <div style={{display: 'flex', width: '100%', marginTop: '2rem'}}>
+        <div style={{width: '45rem', marginRight: '2rem'}}>
+          <SelectBox
+            items={[
+              {_id: '1', name: 'Học kỳ 1 năm học 2020-2021'},
+              {_id: '2', name: 'Học kỳ 2 năm học 2020-2021'},
+              {_id: '3', name: 'Học kỳ hè năm học 2020-2021'},
+              {_id: '4', name: 'Học kỳ 1 năm học 2021-2022'},
+            ]}
+            selectedItem={scholastic}
+            onChange={(item) => {
+              setScholastic(item);
+            }}
+          />
+        </div>
+        <div style={{width: '35rem', marginRight: '2rem'}}>
+          <SelectBox
+            items={[
+              {_id: '1', name: 'Java'},
+              {_id: '2', name: 'Kiểm thử phần mềm'},
+              {_id: '3', name: 'Tiếng Pháp'},
+              {_id: '4', name: 'Chương trình dịch'},
+            ]}
+            selectedItem={module}
+            onChange={(item) => {
+              setModule(item);
+            }}
+          />
+        </div>
+        <Search />
+      </div>
       <EmployeeTable>
         <THeader>
           <Row>
             <Column style={{width: '5rem'}}>STT</Column>
-            <Column style={{width: '50rem'}}>Tên lớp</Column>
+            <Column style={{width: '25rem'}}>Tên lớp</Column>
+            <Column style={{width: '30rem'}}>Năm học</Column>
             <Column>Số lượng</Column>
             <Column style={{}}>Học phần</Column>
-            {/* <Column style={{}}>Chương</Column>
-            <Column style={{}}>Người tạo</Column> */}
+            {/* <Column style={{}}>Người tạo</Column> */}
             <Column style={{}}>Hành động</Column>
           </Row>
         </THeader>
@@ -36,14 +79,13 @@ const Table: React.FunctionComponent = () => {
             <Row key={cl._id}>
               <Cell>{index + 1}</Cell>
               <Cell>
-                <StyledNavLink to={`questions/details/${cl._id}`}>{cl.name}</StyledNavLink>
+                <StyledNavLink to={`classes/details/${cl._id}`}>{cl.name}</StyledNavLink>
               </Cell>
+              <Cell>{cl.scholastic}</Cell>
               <Cell>{cl.numberOfStudents}</Cell>
               <Cell>{cl.module}</Cell>
-              {/* <Cell>{cauHoi.chapter}</Cell>
-              <Cell>{cauHoi.user}</Cell> */}
               <Cell>
-                <StyledLink to={`questions/details/${cl._id}`}>Xem</StyledLink>
+                <StyledLink to={`classes/details/${cl._id}`}>Xem</StyledLink>
                 <a onClick={() => store.deleteQuestion(cl._id)}>Xoá</a>
               </Cell>
             </Row>

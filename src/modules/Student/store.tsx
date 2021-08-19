@@ -1,7 +1,7 @@
 import React from 'react';
 import {makeAutoObservable, observable, configure} from 'mobx';
 
-import {get} from '../../infra/http';
+import {get, patch} from '../../infra/http';
 
 configure({enforceActions: 'observed'});
 
@@ -12,6 +12,10 @@ type ContestTable = {
   numberOfQuestions: number;
   doingTimeExam: number;
   examTime: Date;
+};
+
+type FinishedContest = ContestTable & {
+  score: number;
 };
 
 type Question = {
@@ -59,6 +63,8 @@ class StudentStore {
 
   @observable contestTable: ContestTable[] = [];
 
+  @observable finishedContest: FinishedContest[] = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -69,6 +75,14 @@ class StudentStore {
 
   public *getContestTable() {
     this.contestTable = yield get(`/student/${this.userId}/contests`);
+  }
+
+  public *updateFinishedContest(data: any) {
+    yield patch(`/student/contests`, data);
+  }
+
+  public *getFinishedContest() {
+    this.finishedContest = yield get(`/student/contests/finished/${this.userId}`);
   }
 }
 

@@ -44,6 +44,11 @@ const ContestDetails: React.FunctionComponent = () => {
           answerTrue++;
         }
       });
+      store.updateFinishedContest({
+        studentId: store.userId,
+        score: (answerTrue / store.contestDetails.numberOfQuestions) * 10,
+        examId: store.contestDetails._id,
+      });
       setNumberOfCorrectAnswers(answerTrue);
     }
   }, [store.contestCompleted]);

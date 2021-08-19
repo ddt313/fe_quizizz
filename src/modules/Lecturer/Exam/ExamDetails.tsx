@@ -301,6 +301,28 @@ const ExamDetails: React.FunctionComponent = () => {
                 </StyledValue>
               </Grid>
             </WrapperContentItem>
+            {store.examDetails.finished && store.examDetails.finished.length > 0 && (
+              <WrapperContentItem>
+                <Grid xl={2}>
+                  <StyledKey>Danh điểm Sinh viên:</StyledKey>
+                </Grid>
+                <Grid xl={10}>
+                  <StyledValue>
+                    <QuestionsWrapper>
+                      {store.examDetails.finished.map((st) => (
+                        <QuestionWrapper key={st._id}>
+                          <div>
+                            <span>MSSV: {st.studentId.studentId}</span>
+                            <span style={{margin: '0 2rem'}}>Họ và tên: {st.studentId.name}</span>
+                            <span>Điểm: {Math.round(st.score * 100) / 100}</span>
+                          </div>
+                        </QuestionWrapper>
+                      ))}
+                    </QuestionsWrapper>
+                  </StyledValue>
+                </Grid>
+              </WrapperContentItem>
+            )}
           </WrapperContent>
         )}
       </Container>

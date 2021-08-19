@@ -68,6 +68,7 @@ const Navbar: React.FunctionComponent<Prop> = (props: Prop) => {
           </HeadingWrapper>
 
           <IconNavbar>
+            <Name>{localStorage.getItem('name')}</Name>
             <Avatar src={avatar} alt="avatar" />
             <Popover2
               enforceFocus={false}
@@ -83,6 +84,13 @@ const Navbar: React.FunctionComponent<Prop> = (props: Prop) => {
     </StyledNavbar>
   );
 };
+
+const Name = styled.div`
+  margin-right: 1rem;
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: ${BaseColor.white};
+`;
 
 const StyledNavbar = styled.div`
   ${({theme}) => css`
