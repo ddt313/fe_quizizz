@@ -2,7 +2,7 @@ import {observer} from 'mobx-react';
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
 import styled, {css} from 'styled-components';
-import {DateInput} from '@blueprintjs/datetime';
+import {DateInput, TimePrecision} from '@blueprintjs/datetime';
 import moment from 'moment';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTimesCircle} from '@fortawesome/free-solid-svg-icons';
@@ -17,7 +17,7 @@ import {useLectureStore} from '../store';
 import SelectBox from '../../../components/SelectBox';
 import MultipleSelectBox from '../../../components/MultipleSelectBox';
 import {getMomentFormatter} from '../../../infra/Datetime';
-import {dateFormat, maxDate, minDate} from '../../../config';
+import {dateTimeFormat, maxDate, minDate} from '../../../config';
 
 const ExamDetails: React.FunctionComponent = () => {
   const store = useLectureStore();
@@ -93,12 +93,13 @@ const ExamDetails: React.FunctionComponent = () => {
                   <QuestionWrapper key={examQuestion._id}>
                     {examQuestion.content}
                     <div>
-                      <Link
+                      <a
                         style={{marginRight: '1rem'}}
-                        to={`/lecturer/questions/details/${examQuestion._id}`}
+                        href={`/lecturer/exam-questions/details/${examQuestion._id}`}
+                        target="blank"
                       >
                         Xem
-                      </Link>
+                      </a>
                       {isEdit && (
                         <a
                           style={{marginRight: '1rem'}}
@@ -180,12 +181,17 @@ const ExamDetails: React.FunctionComponent = () => {
               <Grid xl={10}>
                 <StyledValue>
                   {isEdit ? (
-                    <div style={{width: '22rem'}}>
+                    <div style={{width: '30rem'}}>
                       <DateInputWrapper>
                         <DateInput
-                          {...getMomentFormatter(dateFormat)}
+                          {...getMomentFormatter(dateTimeFormat)}
                           popoverProps={{position: 'right'}}
                           fill
+                          closeOnSelection={false}
+                          timePickerProps={{
+                            precision: TimePrecision.MINUTE,
+                            showArrowButtons: true,
+                          }}
                           inputProps={{leftIcon: 'calendar'}}
                           value={new Date(store.examDetails.examTime)}
                           minDate={minDate}
@@ -197,7 +203,7 @@ const ExamDetails: React.FunctionComponent = () => {
                       </DateInputWrapper>
                     </div>
                   ) : (
-                    moment(store.examDetails.examTime).format(dateFormat)
+                    moment(store.examDetails.examTime).format(dateTimeFormat)
                   )}
                 </StyledValue>
               </Grid>
