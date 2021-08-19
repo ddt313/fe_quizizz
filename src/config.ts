@@ -255,6 +255,7 @@ export const minDate = new Date(1950, 1, 1);
 export const maxDate = new Date(2100, 1, 1);
 export const fromDate = new Date('1-1-2019');
 export const dateFormat = 'DD-MM-YYYY';
+export const dateTimeFormat = 'hh:mm A, DD-MM-YYYY';
 export const localeDateStringOption = 'en-GB';
 
 export const levels = ['Dễ', 'Trung bình', 'Khó'];
