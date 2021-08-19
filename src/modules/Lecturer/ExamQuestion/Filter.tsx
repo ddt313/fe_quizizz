@@ -24,14 +24,14 @@ const Filter: React.FunctionComponent = () => {
     <StyledFilter>
       <SelectBox
         items={dataDoKho}
-        defaultSelected={dataDoKho[0]}
+        selectedItem={dataDoKho[0]}
         onChange={() => {
           //
         }}
       />
       <SelectBox
         items={dataHocPhan}
-        defaultSelected={dataHocPhan[0]}
+        selectedItem={dataHocPhan[0]}
         onChange={() => {
           //
         }}

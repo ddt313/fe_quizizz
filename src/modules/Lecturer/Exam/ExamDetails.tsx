@@ -4,6 +4,8 @@ import {Link, useParams} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 import {DateInput} from '@blueprintjs/datetime';
 import moment from 'moment';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faTimesCircle} from '@fortawesome/free-solid-svg-icons';
 
 import Button from '../../../components/Button';
 import Container from '../../../components/Container';
@@ -21,6 +23,8 @@ const ExamDetails: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   const [isEdit, setIsEdit] = React.useState(false);
+  const [inAddQuestions, setInAddQuestions] = React.useState(false);
+  const [examQuestionsEnable, setExamQuestionsEnable] = React.useState(store.examQuestions);
 
   const {id}: {id: string} = useParams();
 
@@ -28,31 +32,93 @@ const ExamDetails: React.FunctionComponent = () => {
     store.getExamById(id);
     store.getModules();
     store.getListNameClasses();
+    store.getExamQuestions({page: 1, limit: 1000});
   }, []);
+
+  React.useEffect(() => {
+    setExamQuestionsEnable(
+      store.examQuestions.filter(
+        (examQuestion) =>
+          !store.examDetails.examQuestions.some((eq) => eq._id === examQuestion._id),
+      ),
+    );
+  }, [store.examQuestions, store.examDetails.examQuestions]);
 
   const handleEditBottonClick = () => {
     setIsEdit(true);
   };
   const handleSaveBottonClick = () => {
     setIsEdit(false);
-    store.updateExamQuestion(id, {
-      content: store.examQuestionDetails.content,
-      moduleId: store.examQuestionDetails.module._id,
-      questions: store.examQuestionDetails.questions.map((question) => question._id),
-      userId: store.userId,
+    store.updateExam(id, {
+      name: store.examDetails.name,
+      moduleId: store.examDetails.module._id,
+      classId: store.examDetails.class.map((c) => c._id),
+      examQuestions: store.examDetails.examQuestions.map((eq) => eq._id),
+      doingExamTime: store.examDetails.doingExamTime,
+      examTime: store.examDetails.examTime,
+      lecturerId: store.userId,
     });
   };
   const handleCancelBottonClick = () => {
     setIsEdit(false);
+    store.getExamById(id);
   };
   const handleChangeNoiDung = (value: string) => {
     store.examDetails.name = value;
+  };
+
+  const handleAddQuestion = ({_id, content}: {_id: string; content: string}) => {
+    store.examDetails.examQuestions.push({_id, content});
+
+    store.examDetails.examQuestions = [...store.examDetails.examQuestions];
   };
 
   return (
     <>
       <Navbar role={Role.lecturer} />
       <Container>
+        {inAddQuestions && (
+          <AddExamQuestionWrapper>
+            <AddExamQuestionHeader>
+              <Title>
+                <h2>Thêm đề thi</h2>
+              </Title>
+              <IconCloseWrapper>
+                <StyledIcon onClick={() => setInAddQuestions(false)} icon={faTimesCircle} />
+              </IconCloseWrapper>
+            </AddExamQuestionHeader>
+            <AddQuestionContent>
+              <QuestionsWrapper>
+                {examQuestionsEnable.map((examQuestion) => (
+                  <QuestionWrapper key={examQuestion._id}>
+                    {examQuestion.content}
+                    <div>
+                      <Link
+                        style={{marginRight: '1rem'}}
+                        to={`/lecturer/questions/details/${examQuestion._id}`}
+                      >
+                        Xem
+                      </Link>
+                      {isEdit && (
+                        <a
+                          style={{marginRight: '1rem'}}
+                          onClick={() =>
+                            handleAddQuestion({
+                              _id: examQuestion._id,
+                              content: examQuestion.content,
+                            })
+                          }
+                        >
+                          Thêm
+                        </a>
+                      )}
+                    </div>
+                  </QuestionWrapper>
+                ))}
+              </QuestionsWrapper>
+            </AddQuestionContent>
+          </AddExamQuestionWrapper>
+        )}
         <WrapperButton>
           {isEdit ? (
             <>
@@ -95,7 +161,7 @@ const ExamDetails: React.FunctionComponent = () => {
                           _id: module._id,
                           name: module.name,
                         }))}
-                        defaultSelected={store.examDetails.module}
+                        selectedItem={store.examDetails.module}
                         onChange={(item) => {
                           store.examDetails.module = item;
                         }}
@@ -170,7 +236,7 @@ const ExamDetails: React.FunctionComponent = () => {
                         <MultipleSelectBox
                           items={store.nameClasses}
                           onSelect={(items) => {
-                            store.examDetails.class = items;
+                            store.examDetails.class = [...items];
                           }}
                           selectedItems={[...store.examDetails.class]}
                         />
@@ -191,7 +257,7 @@ const ExamDetails: React.FunctionComponent = () => {
                   <Button
                     text="Thêm"
                     onClick={() => {
-                      /* */
+                      setInAddQuestions(true);
                     }}
                   />
                 )}
@@ -199,13 +265,13 @@ const ExamDetails: React.FunctionComponent = () => {
               <Grid xl={10}>
                 <StyledValue>
                   <QuestionsWrapper>
-                    {store.examDetails.examQuestions.map((question) => (
-                      <QuestionWrapper key={question._id}>
-                        <div>{question.content}</div>
+                    {store.examDetails.examQuestions.map((examQuestion) => (
+                      <QuestionWrapper key={examQuestion._id}>
+                        <div>{examQuestion.content}</div>
                         <div>
                           <Link
                             style={{marginRight: '1rem'}}
-                            to={`/lecturer/exam-questions/details/${question._id}`}
+                            to={`/lecturer/exam-questions/details/${examQuestion._id}`}
                             target="true"
                           >
                             Xem
@@ -213,7 +279,11 @@ const ExamDetails: React.FunctionComponent = () => {
                           {isEdit && (
                             <a
                               style={{marginRight: '1rem'}}
-                              onClick={() => console.log('xoa', question._id)}
+                              onClick={() => {
+                                store.examDetails.examQuestions = store.examDetails.examQuestions.filter(
+                                  (eq) => eq._id !== examQuestion._id,
+                                );
+                              }}
                             >
                               Xoá
                             </a>
@@ -315,4 +385,50 @@ const Input = styled.input`
   text-indent: 1rem;
   border-radius: 0.5rem;
   border: solid 0.1rem ${BaseColor.gray};
+`;
+
+const AddExamQuestionWrapper = styled.div`
+  width: 110rem;
+  height: 50rem;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  border-radius: 0.5rem;
+  border: solid 0.2rem gray;
+  background-color: white;
+  z-index: 99;
+`;
+
+const AddExamQuestionHeader = styled.div`
+  display: flex;
+`;
+
+const Title = styled.div`
+  display: flex;
+  width: 80%;
+  justify-content: center;
+`;
+
+const IconCloseWrapper = styled.div`
+  display: flex;
+  width: 20%;
+  padding: 1rem 1rem;
+  justify-content: flex-end;
+`;
+
+const StyledIcon = styled(FontAwesomeIcon)`
+  height: 2rem;
+  &&& {
+    width: 2rem;
+  }
+  :hover {
+    cursor: pointer;
+    color: ${BaseColor.lightOrange};
+  }
+`;
+
+const AddQuestionContent = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 2rem;
 `;

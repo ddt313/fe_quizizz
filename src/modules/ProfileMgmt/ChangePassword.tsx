@@ -4,7 +4,6 @@ import {InputGroup, Button, Toaster, Position, Intent} from '@blueprintjs/core';
 import {Tooltip2} from '@blueprintjs/popover2';
 import {useHistory} from 'react-router';
 
-import Footer from '../../components/Footer';
 import Navbar from '../../components/Navbar';
 import {BaseColor} from '../../theme';
 import {Failures} from '../ErrorHandler';
@@ -74,16 +73,16 @@ const ChangePassword: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Navbar role={Role.lecturer} />
+      <Navbar role={localStorage.getItem('role') as Role} />
       <TitleWrapper>
-        <Title>{'change_password.title'}</Title>
+        <Title>{'Thay đổi mật khẩu'}</Title>
       </TitleWrapper>
       <div style={{display: 'flex'}}>
         <Container>
           <ContentWrapper>
             <LabelWrapper>
               <h2>
-                current_password
+                Mật khẩu hiện tại
                 <span>*</span>
               </h2>
             </LabelWrapper>
@@ -123,7 +122,7 @@ const ChangePassword: React.FunctionComponent = () => {
           <ContentWrapper>
             <LabelWrapper>
               <h2>
-                new_password
+                Mật khẩu mới
                 <span>*</span>
               </h2>
             </LabelWrapper>
@@ -165,7 +164,7 @@ const ChangePassword: React.FunctionComponent = () => {
           <ContentWrapper>
             <LabelWrapper>
               <h2>
-                confirm_password
+                Xác nhận mật khẩu mới
                 <span>*</span>
               </h2>
             </LabelWrapper>
@@ -211,7 +210,6 @@ const ChangePassword: React.FunctionComponent = () => {
       <ButtonWrapper>
         <SubmitButton onClick={onSubmitChangePassword}>Submit</SubmitButton>
       </ButtonWrapper>
-      <Footer />
     </div>
   );
 };

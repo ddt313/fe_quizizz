@@ -7,10 +7,11 @@ import {StudentStoreProvider} from './store';
 const StudentManagement: React.FunctionComponent = () => {
   const {path} = useRouteMatch();
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
 
   return (
     <Switch>
-      {token && (
+      {token && role === 'Student' && (
         <StudentStoreProvider>
           <Switch>
             <Route path={`${path}/contests`} component={ContestManagement} />

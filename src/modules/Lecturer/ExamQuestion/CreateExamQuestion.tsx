@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react';
 import React from 'react';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 import {faTimesCircle} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -15,17 +15,27 @@ import {useLectureStore} from '../store';
 import {levels} from '../../../config';
 import SelectBox from '../../../components/SelectBox';
 
-const ExamQuestionDetails: React.FunctionComponent = () => {
+const CreateExamQuestion: React.FunctionComponent = () => {
   const store = useLectureStore();
+  const history = useHistory();
 
-  const [isEdit, setIsEdit] = React.useState(false);
   const [inAddQuestions, setInAddQuestions] = React.useState(false);
   const [questionsEnable, setQuestionsEnable] = React.useState(store.questions);
 
-  const {id}: {id: string} = useParams();
-
   React.useEffect(() => {
-    store.getExamQuestionDetails(id);
+    store.examQuestionDetails = {
+      _id: '',
+      content: '',
+      module: {
+        _id: '',
+        name: '',
+      },
+      exam: {
+        _id: '',
+        name: '',
+      },
+      questions: [],
+    };
     store.getModules();
     store.getListNameExams();
     store.getQuestions({limit: 1000, page: 1});
@@ -39,21 +49,20 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
     );
   }, [store.questions, store.examQuestionDetails.questions]);
 
-  const handleEditBottonClick = () => {
-    setIsEdit(true);
-  };
   const handleSaveBottonClick = () => {
-    setIsEdit(false);
-    store.updateExamQuestion(id, {
+    store.createExamQuestion({
       content: store.examQuestionDetails.content,
       moduleId: store.examQuestionDetails.module._id,
-      questions: store.examQuestionDetails.questions.map((question) => question._id),
       userId: store.userId,
+      dateCreate: new Date(),
+      questions: store.examQuestionDetails.questions,
+      examId: store.examQuestionDetails.exam._id,
     });
+
+    history.push('/lecturer/exam-questions');
   };
   const handleCancelBottonClick = () => {
-    setIsEdit(false);
-    store.getExamQuestionDetails(id);
+    // store.getExamQuestionDetails(id);
   };
   const handleChangeNoiDung = (value: string) => {
     store.examQuestionDetails.content = value;
@@ -68,7 +77,6 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
       level: question.level,
     };
 
-    // store.examQuestionDetails.questions = [...store.examQuestionDetails.questions];
     store.examQuestionDetails.questions.push(q);
     store.examQuestionDetails.questions = [...store.examQuestionDetails.questions];
   };
@@ -99,14 +107,9 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
                       >
                         Xem
                       </Link>
-                      {isEdit && (
-                        <a
-                          style={{marginRight: '1rem'}}
-                          onClick={() => handleAddQuestion(question)}
-                        >
-                          Thêm
-                        </a>
-                      )}
+                      <a style={{marginRight: '1rem'}} onClick={() => handleAddQuestion(question)}>
+                        Thêm
+                      </a>
                     </div>
                   </QuestionWrapper>
                 ))}
@@ -115,14 +118,10 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
           </AddQuestionWrapper>
         )}
         <WrapperButton>
-          {isEdit ? (
-            <>
-              <Button onClick={() => handleCancelBottonClick()} text="Cancel" />
-              <Button onClick={() => handleSaveBottonClick()} text="Save" />
-            </>
-          ) : (
-            <Button onClick={() => handleEditBottonClick()} text="Edit" />
-          )}
+          <>
+            <Button onClick={() => handleCancelBottonClick()} text="Cancel" />
+            <Button onClick={() => handleSaveBottonClick()} text="Save" />
+          </>
         </WrapperButton>
         <WrapperContent>
           <WrapperContentItem>
@@ -131,14 +130,10 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <StyledValue>
-                {isEdit ? (
-                  <StyledTextArea
-                    value={store.examQuestionDetails.content}
-                    onChange={(event) => handleChangeNoiDung(event.target.value)}
-                  />
-                ) : (
-                  store.examQuestionDetails.content
-                )}
+                <StyledTextArea
+                  value={store.examQuestionDetails.content}
+                  onChange={(event) => handleChangeNoiDung(event.target.value)}
+                />
               </StyledValue>
             </Grid>
           </WrapperContentItem>
@@ -148,20 +143,16 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <StyledValue>
-                {isEdit ? (
-                  <div style={{width: '22rem'}}>
-                    <SelectBox
-                      items={store.modules.map((module) => ({_id: module._id, name: module.name}))}
-                      selectedItem={store.examQuestionDetails.module}
-                      onChange={(item) => {
-                        store.examQuestionDetails.module = item;
-                        // console.log(store.questionDetails);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  store.examQuestionDetails.module.name
-                )}
+                <div style={{width: '22rem'}}>
+                  <SelectBox
+                    items={store.modules.map((module) => ({_id: module._id, name: module.name}))}
+                    selectedItem={store.examQuestionDetails.module}
+                    onChange={(item) => {
+                      store.examQuestionDetails.module = item;
+                      // console.log(store.questionDetails);
+                    }}
+                  />
+                </div>
               </StyledValue>
             </Grid>
           </WrapperContentItem>
@@ -171,26 +162,23 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <StyledValue>
-                {isEdit ? (
-                  <div style={{width: '55rem'}}>
-                    <SelectBox
-                      items={store.listNameExams}
-                      selectedItem={store.examQuestionDetails.exam}
-                      onChange={(item) => {
-                        store.examQuestionDetails.exam = item;
-                      }}
-                    />
-                  </div>
-                ) : (
-                  store.examQuestionDetails.exam.name
-                )}
+                <div style={{width: '55rem'}}>
+                  <SelectBox
+                    items={store.listNameExams}
+                    selectedItem={store.examQuestionDetails.exam}
+                    onChange={(item) => {
+                      store.examQuestionDetails.exam = item;
+                      console.log('exam question', store.examQuestionDetails);
+                    }}
+                  />
+                </div>
               </StyledValue>
             </Grid>
           </WrapperContentItem>
           <WrapperContentItem>
             <Grid xl={2}>
               <StyledKey>Danh sách câu hỏi:</StyledKey>
-              {isEdit && <Button text="Thêm" onClick={() => setInAddQuestions(true)} />}
+              <Button text="Thêm" onClick={() => setInAddQuestions(true)} />
             </Grid>
             <Grid xl={10}>
               <StyledValue>
@@ -208,27 +196,25 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
                         >
                           Xem
                         </Link>
-                        {isEdit && (
-                          <a
-                            style={{marginRight: '1rem'}}
-                            onClick={() => {
-                              store.examQuestionDetails.questions = [
-                                ...store.examQuestionDetails.questions.filter(
-                                  (q) => q._id !== question._id,
-                                ),
-                              ] as [
-                                {
-                                  _id: string;
-                                  content: string;
-                                  chapter: string;
-                                  level: number;
-                                },
-                              ];
-                            }}
-                          >
-                            Xoá
-                          </a>
-                        )}
+                        <a
+                          style={{marginRight: '1rem'}}
+                          onClick={() => {
+                            store.examQuestionDetails.questions = [
+                              ...store.examQuestionDetails.questions.filter(
+                                (q) => q._id !== question._id,
+                              ),
+                            ] as [
+                              {
+                                _id: string;
+                                content: string;
+                                chapter: string;
+                                level: number;
+                              },
+                            ];
+                          }}
+                        >
+                          Xoá
+                        </a>
                       </div>
                     </QuestionWrapper>
                   ))}
@@ -242,7 +228,7 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
   );
 };
 
-export default observer(ExamQuestionDetails);
+export default observer(CreateExamQuestion);
 
 const WrapperButton = styled.div`
   margin: 3rem 0;

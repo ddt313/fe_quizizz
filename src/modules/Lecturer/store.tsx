@@ -67,14 +67,12 @@ type ExamQuestionDetails = {
   content: string;
   module: SelectBoxType;
   exam: SelectBoxType;
-  questions: [
-    {
-      _id: string;
-      content: string;
-      chapter: string;
-      level: number;
-    },
-  ];
+  questions: {
+    _id: string;
+    content: string;
+    chapter: string;
+    level: number;
+  }[];
 };
 
 type ExamTable = {
@@ -104,7 +102,7 @@ type NameClass = {
 };
 
 class LecturerStore {
-  @observable userId = '60fbd089621f7518507bf9c1';
+  @observable userId = localStorage.getItem('id');
 
   @observable nameClasses: NameClass[] = [];
 
@@ -234,6 +232,10 @@ class LecturerStore {
     yield put(`/exam-questions/details/${id}`, data);
   }
 
+  public *createChapter(moduleId: string, value: string) {
+    yield post(`/chapters`, {moduleId, value});
+  }
+
   public *createQuestion(question: any) {
     yield post('/questions', question);
   }
@@ -264,6 +266,20 @@ class LecturerStore {
 
     this.examQuestionDetails = data;
     console.log('exam question data:', data);
+  }
+
+  public *deleteExamQuestion(id: string) {
+    this.examQuestions = this.examQuestions.filter((e) => e._id !== id);
+    yield $delete(`/exam-questions/${id}`);
+  }
+
+  public *updateExam(id: string, data: any) {
+    yield put(`/exams/details/${id}`, data);
+  }
+
+  public *createExamQuestion(data: any) {
+    console.log('create exam question', data);
+    yield post(`/exam-questions`, data);
   }
 }
 

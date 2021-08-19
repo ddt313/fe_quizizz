@@ -14,10 +14,13 @@ import {Role} from '../../../types';
 import {useLectureStore} from '../store';
 import SelectBox from '../../../components/SelectBox';
 import {levels} from '../../../config';
+import SelectBoxCreate from '../../../components/SelectBoxCreate';
 
 const CreateQuestion: React.FunctionComponent = () => {
   const history = useHistory();
   const store = useLectureStore();
+
+  const [isSelectedNewModule, setIsSelectedNewModule] = React.useState(false);
 
   React.useEffect(() => {
     store.questionDetails = {
@@ -26,11 +29,11 @@ const CreateQuestion: React.FunctionComponent = () => {
       level: 0,
       module: {
         _id: '',
-        name: '',
+        name: 'Chọn học phần',
       },
       chapter: {
         _id: '',
-        name: '',
+        name: 'Chọn chương',
       },
       answers: [
         {_id: '', content: '', isTrue: true},
@@ -41,6 +44,12 @@ const CreateQuestion: React.FunctionComponent = () => {
     };
     store.getModules();
   }, []);
+
+  const createNewChapter = async (moduleId: string, value: string) => {
+    await store.createChapter(moduleId, value);
+
+    store.getChapter(moduleId);
+  };
 
   const handleRadioChange = (index: number) => {
     store.questionDetails.answers.find((cauHoi) => cauHoi.isTrue === true)!.isTrue = false;
@@ -56,14 +65,6 @@ const CreateQuestion: React.FunctionComponent = () => {
   };
 
   const handleSaveBottonClick = () => {
-    // post data
-    // store.questions.push({
-    //   id: store.questionDetails.id,
-    //   noiDung: store.questionDetails.noiDung,
-    //   doKho: levels[store.questionDetails.doKho],
-    //   hocPhan: store.questionDetails.hocPhan.name,
-    //   nguoiTao: '@default',
-    // });
     const question: any = {
       content: store.questionDetails.content,
       chapterId: store.questionDetails.chapter._id,
@@ -77,7 +78,6 @@ const CreateQuestion: React.FunctionComponent = () => {
     };
 
     store.createQuestion(question);
-    console.log('post data details');
     history.push('/lecturer/questions');
   };
   const handleCancelBottonClick = () => {
@@ -137,12 +137,14 @@ const CreateQuestion: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
+                {console.log('hocphan')}
                 <SelectBox
-                  items={store.modules}
-                  defaultSelected={store.modules[0] ? store.modules[0] : {_id: '', name: ''}}
+                  items={store.modules[0] ? store.modules : []}
+                  selectedItem={store.questionDetails.module}
                   onChange={(item) => {
                     store.questionDetails.module = item;
                     store.getChapter(item._id);
+                    setIsSelectedNewModule(true);
                   }}
                 />
               </div>
@@ -154,11 +156,19 @@ const CreateQuestion: React.FunctionComponent = () => {
             </Grid>
             <Grid xl={10}>
               <div style={{width: '22rem'}}>
-                <SelectBox
-                  items={store.chapters}
-                  defaultSelected={store.chapters[0] ? store.chapters[0] : {_id: '', name: ''}}
-                  onChange={(item) => {
+                <SelectBoxCreate
+                  items={store.chapters[0] ? store.chapters : []}
+                  selectedItem={
+                    isSelectedNewModule && store.chapters[0]
+                      ? store.chapters[0]
+                      : store.questionDetails.chapter
+                  }
+                  onSelect={(item) => {
                     store.questionDetails.chapter = item;
+                    setIsSelectedNewModule(false);
+                  }}
+                  onCreate={(value) => {
+                    createNewChapter(store.questionDetails.module._id, value);
                   }}
                 />
               </div>
@@ -170,7 +180,10 @@ const CreateQuestion: React.FunctionComponent = () => {
               <div style={{width: '22rem'}}>
                 <SelectBox
                   items={levels.map((level, index) => ({_id: index + '', name: level}))}
-                  defaultSelected={{_id: '1', name: levels[0]}}
+                  selectedItem={{
+                    _id: store.questionDetails.level.toString(),
+                    name: levels[store.questionDetails.level],
+                  }}
                   onChange={(item) => {
                     store.questionDetails.level = +item._id;
                   }}

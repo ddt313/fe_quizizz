@@ -9,10 +9,11 @@ import {LectureStoreProvider} from './store';
 const LecturerManagement: React.FunctionComponent = () => {
   const {path} = useRouteMatch();
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
 
   return (
     <Switch>
-      {token && (
+      {token && role === 'Lecturer' && (
         <LectureStoreProvider>
           <Switch>
             <Route path={`${path}/questions`} component={QuestionManagement} />

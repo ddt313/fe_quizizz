@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 import styled, {css} from 'styled-components';
@@ -7,11 +8,17 @@ import Container from '../../../components/Container';
 // import Footer from '../../../components/Footer';
 import Navbar from '../../../components/Navbar';
 import {Role} from '../../../types';
+import {useLectureStore} from '../store';
 
 import Table from './Table';
 
 const QuestionManagement: React.FunctionComponent = () => {
   const history = useHistory();
+  const store = useLectureStore();
+
+  React.useEffect(() => {
+    store.getModules();
+  }, [store]);
 
   return (
     <>
@@ -29,7 +36,7 @@ const QuestionManagement: React.FunctionComponent = () => {
   );
 };
 
-export default QuestionManagement;
+export default observer(QuestionManagement);
 
 const TitleWrapper = styled.div`
   display: flex;

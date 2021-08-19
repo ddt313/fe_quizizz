@@ -19,7 +19,7 @@ const Exams: React.FunctionComponent = () => {
         <TitleWrapper>
           <Title>Danh sách kỳ thi</Title>
           <ButtonWrapper>
-            <Button text="Create" onClick={() => history.push('/lecturer/exam-questions/create')} />
+            <Button text="Create" onClick={() => history.push('/lecturer/exams/create')} />
           </ButtonWrapper>
         </TitleWrapper>
         <Table />

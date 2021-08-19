@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import React from 'react';
 import styled, {css} from 'styled-components';
 
@@ -11,15 +12,13 @@ type ItemSelectBox = {
 };
 
 type Props = {
-  defaultSelected: ItemSelectBox;
+  selectedItem: ItemSelectBox;
   items: ItemSelectBox[];
   onChange: (item: ItemSelectBox) => void;
 };
 
-const SelectBox: React.FunctionComponent<Props> = ({defaultSelected, items, onChange}: Props) => {
+const SelectBox: React.FunctionComponent<Props> = ({selectedItem, items, onChange}: Props) => {
   const [isPopOverOpen, setIsPopOverOpen] = React.useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = React.useState(defaultSelected);
-  const [activeId, setActiveId] = React.useState(defaultSelected._id);
 
   const toggleList = () => {
     setIsPopOverOpen(!isPopOverOpen);
@@ -27,8 +26,6 @@ const SelectBox: React.FunctionComponent<Props> = ({defaultSelected, items, onCh
 
   const selectItem = (item: ItemSelectBox) => {
     setIsPopOverOpen(false);
-    setSelectedItem(item);
-    setActiveId(item._id);
     onChange(item);
   };
 
@@ -41,7 +38,7 @@ const SelectBox: React.FunctionComponent<Props> = ({defaultSelected, items, onCh
           <WrapperListItem>
             {items.map((item, index) => (
               <StyledItem
-                className={activeId === item._id ? 'active' : ''}
+                className={selectedItem._id === item._id ? 'active' : ''}
                 key={index}
                 onClick={() => selectItem(item)}
               >
@@ -57,7 +54,7 @@ const SelectBox: React.FunctionComponent<Props> = ({defaultSelected, items, onCh
   );
 };
 
-export default SelectBox;
+export default observer(SelectBox);
 
 const SelectBoxWrapper = styled.div`
   display: flex;

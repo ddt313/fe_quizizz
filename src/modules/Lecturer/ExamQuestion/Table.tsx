@@ -42,7 +42,7 @@ const Table: React.FunctionComponent = () => {
               <Cell>{examQuestion.numberOfQuestions}</Cell>
               <Cell>
                 <StyledLink to={`exam-questions/details/${examQuestion._id}`}>Xem</StyledLink>
-                <a onClick={() => store.deleteQuestion(examQuestion._id)}>Xoá</a>
+                <a onClick={() => store.deleteExamQuestion(examQuestion._id)}>Xoá</a>
               </Cell>
             </Row>
           ))}

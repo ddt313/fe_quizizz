@@ -40,7 +40,7 @@ type ContestDetails = {
 };
 
 class StudentStore {
-  @observable userId = '6117dd2061f12dafa120eb68';
+  @observable userId = localStorage.getItem('id');
 
   @observable contestCompleted = false;
 

@@ -5,6 +5,7 @@ import {NavLink, useHistory} from 'react-router-dom';
 
 import {BaseColor} from '../../theme';
 import {Role} from '../../types';
+import {useAuthStore} from '../../modules/Auth/store';
 
 type PanelItemType = {
   name: string;
@@ -41,6 +42,7 @@ const generatePanelItem = (role: Role): PanelItemType[] => {
 };
 
 export const UserPanel: React.FunctionComponent<Prop> = (props: Prop) => {
+  const store = useAuthStore();
   const history = useHistory();
 
   const {role} = props;
@@ -60,6 +62,7 @@ export const UserPanel: React.FunctionComponent<Prop> = (props: Prop) => {
       <MenuItem
         text="Logout"
         onClick={() => {
+          store.Logout();
           history.push('/');
         }}
       />

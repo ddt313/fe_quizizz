@@ -67,7 +67,7 @@ const UserProfilePage: React.FunctionComponent = observer(() => {
 
   return (
     <div>
-      <Navbar role={Role.lecturer} />
+      <Navbar role={localStorage.getItem('role') as Role} />
 
       <TitleWrapper>
         <Title>{'Thông tin Tài khoản'}</Title>

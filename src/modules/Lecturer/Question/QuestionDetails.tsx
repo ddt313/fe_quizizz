@@ -14,12 +14,14 @@ import {Role} from '../../../types';
 import {useLectureStore} from '../store';
 import {levels} from '../../../config';
 import SelectBox from '../../../components/SelectBox';
+import SelectBoxCreate from '../../../components/SelectBoxCreate';
 
 const QuestionDetails: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   const [isEdit, setIsEdit] = React.useState(false);
   const [isRender, setIsRender] = React.useState(false);
+  const [isSelectedNewModule, setIsSelectedNewModule] = React.useState(false);
   const {id}: {id: string} = useParams();
 
   React.useEffect(() => {
@@ -28,8 +30,14 @@ const QuestionDetails: React.FunctionComponent = () => {
   }, []);
 
   React.useEffect(() => {
-    store.getChapter(store.questionDetails.module._id);
-  }, [store.questionDetails]);
+    if (isEdit) store.getChapter(store.questionDetails.module._id);
+  }, [isEdit]);
+
+  const createNewChapter = async (moduleId: string, value: string) => {
+    await store.createChapter(moduleId, value);
+
+    store.getChapter(moduleId);
+  };
 
   const handleRadioChange = (index: number) => {
     if (!isEdit) {
@@ -132,12 +140,11 @@ const QuestionDetails: React.FunctionComponent = () => {
                 <div style={{width: '22rem'}}>
                   <SelectBox
                     items={store.modules}
-                    defaultSelected={
-                      store.modules[0] ? store.modules[0] : {_id: '', name: 'Chọn Học Phần'}
-                    }
+                    selectedItem={store.questionDetails.module}
                     onChange={(item) => {
                       store.getChapter(item._id);
                       store.questionDetails.module = item;
+                      setIsSelectedNewModule(true);
                     }}
                   />
                 </div>
@@ -153,11 +160,27 @@ const QuestionDetails: React.FunctionComponent = () => {
             <Grid xl={10}>
               {isEdit ? (
                 <div style={{width: '30rem'}}>
-                  <SelectBox
+                  {/* <SelectBox
                     items={store.chapters}
-                    defaultSelected={store.chapters[0] ? store.chapters[0] : {_id: '', name: ''}}
+                    selectedItem={
+                      isSelectedNewModule ? store.chapters[0] : store.questionDetails.chapter
+                    }
                     onChange={(item) => {
                       store.questionDetails.chapter = item;
+                      setIsSelectedNewModule(false);
+                    }}
+                  /> */}
+                  <SelectBoxCreate
+                    items={store.chapters}
+                    selectedItem={
+                      isSelectedNewModule ? store.chapters[0] : store.questionDetails.chapter
+                    }
+                    onSelect={(item) => {
+                      store.questionDetails.chapter = item;
+                      setIsSelectedNewModule(false);
+                    }}
+                    onCreate={(value) => {
+                      createNewChapter(store.questionDetails.module._id, value);
                     }}
                   />
                 </div>
@@ -173,7 +196,7 @@ const QuestionDetails: React.FunctionComponent = () => {
                 <div style={{width: '22rem'}}>
                   <SelectBox
                     items={levels.map((level, index) => ({_id: index + '', name: level}))}
-                    defaultSelected={{
+                    selectedItem={{
                       _id: store.questionDetails.level.toString(),
                       name: levels[store.questionDetails.level],
                     }}
