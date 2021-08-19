@@ -195,7 +195,8 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
                   {store.examQuestionDetails.questions.map((question) => (
                     <QuestionWrapper key={question._id}>
                       <div>
-                        {question.content} | {question.chapter} | {levels[question.level]}
+                        {question.content} | Chương: {question.chapter} | Độ khó:{' '}
+                        {levels[question.level]}
                       </div>
                       <div>
                         <Link

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import styled, {css} from 'styled-components';
 import {observer} from 'mobx-react';
 
@@ -11,7 +11,6 @@ import {useAuthStore} from './store';
 
 const LoginPage: React.FunctionComponent = () => {
   const store = useAuthStore();
-  const history = useHistory();
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [error, setError] = React.useState({
@@ -30,9 +29,9 @@ const LoginPage: React.FunctionComponent = () => {
 
     if (localStorage.getItem('token'))
       if (localStorage.getItem('role') === 'Lecturer') {
-        history.push('/lecture/questions');
+        window.location.href = 'http://localhost:3000/lecturer/questions';
       } else if (localStorage.getItem('role') === 'Student') {
-        history.push('/student/contests');
+        window.location.href = 'http://localhost:3000/student/contests';
       }
   };
 

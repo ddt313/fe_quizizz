@@ -96,7 +96,7 @@ const ContestDetails: React.FunctionComponent = () => {
               </div>
             </div>
           </HeaderContest>
-          <Content>
+          <Content style={{marginLeft: '2rem'}}>
             {store.contestDetails.examQuestions.questions.map((question, index) => (
               <QuestionWrapper key={index}>
                 <QuestionContent>
