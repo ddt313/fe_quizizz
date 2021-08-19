@@ -19,21 +19,21 @@ type Prop = {
 const generatePanelItem = (role: Role): PanelItemType[] => {
   if (role === Role.admin) {
     const listPanelItems: PanelItemType[] = [
-      {name: 'See Pprofile', path: '/profile'},
+      {name: 'See Profile', path: '/profile'},
       {name: 'Change Password', path: '/profile/change-password'},
     ];
 
     return listPanelItems;
   } else if (role === Role.lecturer) {
     const listPanelItems: PanelItemType[] = [
-      {name: 'See Pprofile', path: '/profile'},
+      {name: 'See Profile', path: '/profile'},
       {name: 'Change Password', path: '/profile/change-password'},
     ];
 
     return listPanelItems;
   } else {
     const listPanelItems: PanelItemType[] = [
-      {name: 'See Pprofile', path: '/profile'},
+      {name: 'See Profile', path: '/profile'},
       {name: 'Change Password', path: '/profile/change-password'},
     ];
 

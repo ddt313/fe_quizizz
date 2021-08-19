@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import {Link, NavLink} from 'react-router-dom';
 import {observer} from 'mobx-react';
-import moment from 'moment';
 
 import Pagination from '../../../components/Pagination';
 import {BaseColor} from '../../../theme';
@@ -14,7 +13,7 @@ const Table: React.FunctionComponent = () => {
   const store = useLectureStore();
 
   React.useEffect(() => {
-    store.getExams({page: 1, limit: store.pagination.limit});
+    store.getClasses();
   }, []);
 
   return (
@@ -24,26 +23,28 @@ const Table: React.FunctionComponent = () => {
         <THeader>
           <Row>
             <Column style={{width: '5rem'}}>STT</Column>
-            <Column style={{width: '40rem'}}>Tên</Column>
+            <Column style={{width: '50rem'}}>Tên lớp</Column>
+            <Column>Số lượng</Column>
             <Column style={{}}>Học phần</Column>
-            <Column>Thời gian</Column>
-            <Column>Thời lượng</Column>
-            <Column style={{width: '20rem'}}>Hành động</Column>
+            {/* <Column style={{}}>Chương</Column>
+            <Column style={{}}>Người tạo</Column> */}
+            <Column style={{}}>Hành động</Column>
           </Row>
         </THeader>
         <TBody>
-          {store.exams.map((exam, index) => (
-            <Row key={index}>
+          {store.classes.map((cl, index) => (
+            <Row key={cl._id}>
               <Cell>{index + 1}</Cell>
               <Cell>
-                <StyledNavLink to={`exams/details/${exam._id}`}>{exam.name}</StyledNavLink>
+                <StyledNavLink to={`questions/details/${cl._id}`}>{cl.name}</StyledNavLink>
               </Cell>
-              <Cell>{exam.module}</Cell>
-              <Cell>{moment(exam.examTime).format('DD/MM/YYYY')}</Cell>
-              <Cell>{exam.doingExamTime} phút</Cell>
+              <Cell>{cl.numberOfStudents}</Cell>
+              <Cell>{cl.module}</Cell>
+              {/* <Cell>{cauHoi.chapter}</Cell>
+              <Cell>{cauHoi.user}</Cell> */}
               <Cell>
-                <StyledLink to={`exams/details/${exam._id}`}>Xem</StyledLink>
-                <a onClick={() => store.deleteExam(exam._id)}>Xoá</a>
+                <StyledLink to={`questions/details/${cl._id}`}>Xem</StyledLink>
+                <a onClick={() => store.deleteQuestion(cl._id)}>Xoá</a>
               </Cell>
             </Row>
           ))}
@@ -52,7 +53,7 @@ const Table: React.FunctionComponent = () => {
       <Pagination
         pageTotal={store.pagination.pageTotal}
         onChange={({selected}) => {
-          store.getExamQuestions({page: selected + 1, limit: store.pagination.limit});
+          store.getQuestions({page: selected + 1, limit: store.pagination.limit});
         }}
       />
     </TableWrapper>

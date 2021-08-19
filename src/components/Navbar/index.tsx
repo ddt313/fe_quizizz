@@ -34,6 +34,7 @@ const getNavLinks = (role: Role): NavLinkType[] => {
       {name: 'Câu hỏi', path: '/lecturer/questions'},
       {name: 'Đề thi', path: '/lecturer/exam-questions'},
       {name: 'Kỳ thi', path: '/lecturer/exams'},
+      {name: 'Lớp học phần', path: '/lecturer/classes'},
     ];
 
     return listPanelItems;

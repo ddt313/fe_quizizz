@@ -101,8 +101,17 @@ type NameClass = {
   name: string;
 };
 
+type Class = {
+  _id: string;
+  name: string;
+  module: string;
+  numberOfStudents: number;
+};
+
 class LecturerStore {
   @observable userId = localStorage.getItem('id');
+
+  @observable classes: Class[] = [];
 
   @observable nameClasses: NameClass[] = [];
 
@@ -174,6 +183,10 @@ class LecturerStore {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  public *getClasses() {
+    this.classes = yield get(`/classes/${this.userId}`);
   }
 
   public *getListNameClasses() {
