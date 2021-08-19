@@ -289,6 +289,12 @@ class LecturerStore {
   public *createExam(data: any) {
     yield post(`/exams`, data);
   }
+
+  public *deleteExam(id: string) {
+    this.exams = this.exams.filter((exam) => exam._id !== id);
+
+    yield $delete(`/exams/${id}`);
+  }
 }
 
 const LectureStoreContext = React.createContext({} as LecturerStore);

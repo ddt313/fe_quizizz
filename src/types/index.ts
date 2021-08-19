@@ -15,6 +15,7 @@ export type QuestionTable = {
   level: number;
   module: string;
   user: string;
+  chapter: string;
 };
 
 export type SelectBoxType = {

@@ -63,11 +63,10 @@ const ExamQuestionDetails: React.FunctionComponent = () => {
     const q = {
       _id: question._id,
       content: question.content,
-      chapter: '',
+      chapter: question.chapter,
       level: question.level,
     };
 
-    // store.examQuestionDetails.questions = [...store.examQuestionDetails.questions];
     store.examQuestionDetails.questions.push(q);
     store.examQuestionDetails.questions = [...store.examQuestionDetails.questions];
   };

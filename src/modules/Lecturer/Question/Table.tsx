@@ -27,8 +27,9 @@ const Table: React.FunctionComponent = () => {
             <Column style={{width: '50rem'}}>Nội dung</Column>
             <Column>Độ khó</Column>
             <Column style={{}}>Học phần</Column>
+            <Column style={{}}>Chương</Column>
             <Column style={{}}>Người tạo</Column>
-            <Column style={{width: '20rem'}}>Hành động</Column>
+            <Column style={{}}>Hành động</Column>
           </Row>
         </THeader>
         <TBody>
@@ -42,6 +43,7 @@ const Table: React.FunctionComponent = () => {
               </Cell>
               <Cell>{levels[cauHoi.level]}</Cell>
               <Cell>{cauHoi.module}</Cell>
+              <Cell>{cauHoi.chapter}</Cell>
               <Cell>{cauHoi.user}</Cell>
               <Cell>
                 <StyledLink to={`questions/details/${cauHoi._id}`}>Xem</StyledLink>
